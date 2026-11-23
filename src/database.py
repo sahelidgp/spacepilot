@@ -8,6 +8,13 @@ try:
 except ImportError:
     HAS_PANDAS = False
 
+try:
+    import sqlglot
+    from sqlglot import exp
+    HAS_SQLGLOT = True
+except ImportError:
+    HAS_SQLGLOT = False
+
 class DatabaseManager:
     def __init__(self, db_path=None):
         if db_path is None:
@@ -44,15 +51,45 @@ class DatabaseManager:
         return "\n".join(schema_text)
 
     def validate_sql(self, sql_query: str) -> tuple[bool, str]:
-        """Ensures queries are strictly read-only SELECT statements (SQL Injection & Destructive Action Prevention)."""
-        clean_query = sql_query.strip().strip(";").lower()
-        
-        forbidden_keywords = ["drop", "delete", "insert", "update", "alter", "create", "truncate", "replace", "grant", "revoke"]
+        """Ensures queries are strictly read-only SELECT statements via SQLGlot AST validation."""
+        if not sql_query or not sql_query.strip():
+            return False, "Query is empty."
+
+        clean_query = sql_query.strip().rstrip(";")
+
+        # 1. SQLGlot AST Parsing & Node Verification
+        if HAS_SQLGLOT:
+            try:
+                expression = sqlglot.parse_one(clean_query, read="sqlite")
+                if expression is None:
+                    return False, "Security Violation: Failed to parse SQL into a valid AST."
+                
+                # Check root statement type (must be Select or Union)
+                if not isinstance(expression, (exp.Select, exp.Union)):
+                    return False, f"Security Violation: Query root must be a SELECT or UNION statement, received '{expression.key.upper()}'."
+                
+                # Walk all AST nodes to catch embedded destructive statements
+                forbidden_nodes = (
+                    exp.Drop, exp.Delete, exp.Insert, exp.Update, exp.Alter,
+                    exp.Create, exp.Command, exp.TruncateTable
+                )
+                for node in expression.walk():
+                    if isinstance(node, forbidden_nodes):
+                        return False, f"Security Violation: AST detected forbidden statement type '{node.key.upper()}'. Read-only queries only."
+                
+                return True, "Valid (AST Verified Read-Only)"
+            except Exception as e:
+                # If sqlglot parsing fails, fall through to strict keyword inspection
+                pass
+
+        # 2. Strict Fallback Inspection
+        forbidden_keywords = ["drop", "delete", "insert", "update", "alter", "create", "truncate", "replace", "grant", "revoke", "attach"]
+        lower_q = clean_query.lower()
         for kw in forbidden_keywords:
-            if re.search(rf"\b{kw}\b", clean_query):
+            if re.search(rf"\b{kw}\b", lower_q):
                 return False, f"Security Violation: Destructive operation '{kw.upper()}' is forbidden. Read-only queries only."
 
-        if not (clean_query.startswith("select") or clean_query.startswith("with")):
+        if not (lower_q.startswith("select") or lower_q.startswith("with")):
             return False, "Query must be a SELECT statement."
 
         return True, "Valid"
@@ -66,6 +103,9 @@ class DatabaseManager:
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
+            
+            # Enforce read-only constraint at the SQLite engine level
+            cursor.execute("PRAGMA query_only = ON;")
             cursor.execute(f"EXPLAIN QUERY PLAN {sql_query}")
             
             if HAS_PANDAS:

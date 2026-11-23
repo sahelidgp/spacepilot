@@ -381,6 +381,7 @@ with tab1:
     if (run_query or quick_query != "Custom Query") and user_query:
         with st.spinner("Analyzing schema & translating natural language to SQL..."):
             generated_sql = sql_engine.generate_sql(user_query)
+            active_sql = generated_sql
             
             # Show SQL Container
             st.markdown("##### 🔍 Generated & Validated SQL")
@@ -394,8 +395,12 @@ with tab1:
                 st.error(f"Execution Error: {error_msg}")
                 st.warning("⚡ Triggering automated GenAI self-correction loop...")
                 corrected_sql = sql_engine.self_correct_sql(user_query, generated_sql, error_msg)
+                st.markdown("##### 🛠️ Auto-Repaired SQL")
                 st.code(corrected_sql, language="sql")
                 data, error_msg, cols = db.execute_query(corrected_sql)
+                if not error_msg and data is not None:
+                    active_sql = corrected_sql
+                    st.success("✅ Self-correction succeeded! Executed repaired query.")
 
             if data is not None:
                 # Check emptiness
@@ -437,7 +442,7 @@ with tab1:
                     st.markdown("##### 🤖 Mission Analyst Summary")
                     summary = sql_engine.explain_results(
                         user_query,
-                        generated_sql,
+                        active_sql,
                         str(data[:5] if isinstance(data, list) else data.head(5).to_dict())
                     )
                     st.info(summary)
@@ -461,10 +466,13 @@ with tab2:
         selected_anomaly_idx = st.selectbox(
             "Select an active anomaly alert to investigate:",
             range(len(anomalies)),
-            format_func=lambda i: f"[{anomalies[i].get('satellite_name')}] {anomalies[i].get('subsystem_alert')} — Timestamp: {anomalies[i].get('timestamp')}"
+            format_func=lambda i: f"[{anomalies[i].get('satellite_name')}] {anomalies[i].get('detection_type', 'Threshold')}: {anomalies[i].get('subsystem_alert')} — {anomalies[i].get('timestamp')}"
         )
 
         selected_record = anomalies[selected_anomaly_idx]
+        
+        # Display detection methodology tag
+        st.caption(f"🧠 **Detection Engine:** `{selected_record.get('detection_type', 'Threshold Analysis')}` &nbsp;|&nbsp; **Trigger Factors:** {', '.join(selected_record.get('anomaly_reasons', ['Threshold Excursion']))}")
         
         # Telemetry Quick-Look Cards
         c1, c2, c3, c4 = st.columns(4)

@@ -10,6 +10,9 @@ sqlglot>=23.0.0
 google-genai>=0.1.1
 google-generativeai>=0.7.0
 
+# Machine Learning & Anomaly Detection
+scikit-learn>=1.4.0
+
 # Document & PDF Parsing
 pypdf>=4.0.0
 
