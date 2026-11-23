@@ -239,6 +239,11 @@ with st.sidebar:
     
     st.divider()
     env_key = os.getenv("GEMINI_API_KEY", "")
+    if not env_key:
+        try:
+            env_key = st.secrets.get("GEMINI_API_KEY", "")
+        except Exception:
+            pass
     api_key_input = st.text_input("Gemini API Key", value=env_key, type="password", placeholder="Paste API Key or loads from .env")
     if not api_key_input:
         st.info("⚡ **Offline / Demo Mode Active**\nRunning with built-in heuristic parsing, SQL safety guards, and local SOP document search.")
