@@ -1,0 +1,26 @@
+# INSAT-3DR Spacecraft Subsystems & Telemetry Operations Manual
+Document ID: ISRO-INSAT3DR-OPS-2021-V4
+Classification: Public / Academic Reference
+
+1. ELECTRICAL POWER SUBSYSTEM (EPS)
+1.1 Power Generation and Storage Architecture
+INSAT-3DR is equipped with a single-wing sun-tracking solar array generating approximately 1700 W of electrical power at Beginning of Life (BOL). Energy storage is provided by two 18-cell Lithium-Ion battery packs rated at 90 Ah.
+
+1.2 Voltage Thresholds & Telemetry Channels
+- Channel EPS_BAT_VOLT (Nominal: 28.0 V to 32.5 V)
+  * Float Charge State: 31.8 V - 32.2 V
+  * Discharging State (Eclipse Phase): 24.5 V - 28.0 V
+  * Low Voltage Warning (Yellow Alert): 22.0 V
+  * Critical Undervoltage Cutoff (Red Alert): < 18.0 V. Initiates automated payload shutdown to preserve spacecraft bus survival.
+  * Anomalous Depletion (< 12.0 V): Severe short-circuit or cell rupture risk. Requires immediate ground station override.
+
+1.3 Thermal Control Subsystem (TCS) Limits for Batteries
+- Channel TCS_BAT_TEMP (Nominal: 10°C to 25°C)
+  * Maximum Operating Limit: 35°C
+  * Thermal Excursion Alert: > 45°C indicates thermal runaway or radiator shutter failure. If temperature exceeds 50°C, the power management unit (PMU) must command load shedding and heater isolation.
+
+2. ECLIPSE OPERATIONS
+During equinox periods, INSAT-3DR experiences daily solar eclipses lasting up to 72 minutes.
+- Solar panel current (EPS_SOL_CURR) drops from ~9.5 A to < 0.5 A.
+- Battery discharge is expected and nominal.
+- Once exiting penumbra, solar array drive mechanism (SADM) resumes sun tracking, restoring charging current within 4 minutes.

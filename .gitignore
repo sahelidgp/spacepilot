@@ -1,0 +1,20 @@
+# Environment variables
+.env
+.env.local
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Database & local vector storage
+# (Note: we can keep a sample satellites.db tracked or generated via script)
+chroma_db/
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db

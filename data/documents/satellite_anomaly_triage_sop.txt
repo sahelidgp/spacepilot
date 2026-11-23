@@ -1,0 +1,26 @@
+# Spacecraft Emergency Triage and Anomaly Resolution (SOP)
+Document ID: ISRO-DRDO-ANOMALY-SOP-REV3
+Standard Operating Procedure for Ground Station Flight Controllers
+
+1. PROCEDURE FOR CRITICAL BATTERY UNDERVOLT AND OVERHEAT
+Condition: Battery Voltage < 14.0 V AND Battery Temp > 45°C
+Primary Suspect: Short circuit in secondary power bus, payload overload, or battery thermal runaway.
+Emergency Action Sequence:
+1. Ground Controller Command: ISSUE IMMEDIATE EMERGENCY PAYLOAD LOAD-SHEDDING.
+2. Disable active radar, imaging sensors, and non-essential transponders.
+3. Switch power bus regulator to Secondary Redundant Bus (Bus-B).
+4. Command attitude control to point spacecraft cold-side radiator towards deep space to dump accumulated heat.
+5. Inhibit battery fast-charging until battery core temperature drops below 28°C.
+
+2. PROCEDURE FOR GYROSCOPE ATTITUDE CONTROL DRIFT
+Condition: Gyro drift rate > 0.05 deg/sec (Nominal is < 0.005 deg/sec).
+Primary Suspect: Fiber-optic gyro laser diode degradation, reaction wheel saturation, or solar radiation torque imbalance.
+Emergency Action Sequence:
+1. Command star tracker cross-verification to confirm true inertial pointing.
+2. Execute Reaction Wheel Momentum Dump utilizing on-board magnetic torquers (MTQs).
+3. If drift rate remains erratic (> 0.1 deg/sec), command transition to Sun-Pointing Safe-Hold Mode (SPSHM) using redundant coarse sun sensors.
+4. Reboot the Attitude and Orbit Control Electronics (AOCE) primary processor.
+
+3. LOSS OF SIGNAL (LOS) AND TELECOMMUNICATION FADE
+Condition: Signal Strength < -105 dBm (Nominal is -70 dBm).
+Action Sequence: Check ground antenna azimuth/elevation tracking, switch to omni-directional S-band emergency telemetry transponder, and schedule pass over alternate ground station (e.g., ISTRAC Bengaluru / Port Blair).

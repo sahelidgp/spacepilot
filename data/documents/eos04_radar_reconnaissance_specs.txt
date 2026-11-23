@@ -1,0 +1,16 @@
+# EOS-04 (RISAT-1A) SAR Reconnaissance Satellite Operations Manual
+Document ID: ISRO-EOS04-RECON-DOC-2022
+Classification: Strategic Earth Observation Reference
+
+1. MISSION OVERVIEW & RADAR PAYLOAD
+EOS-04 is a Radar Imaging Satellite designed to provide high-resolution Synthetic Aperture Radar (SAR) imagery in C-band for defense, border surveillance, and disaster management in all-weather conditions.
+
+2. POWER DEMAND & THERMAL DISSIPATION PROFILE
+2.1 Active Radar Duty Cycles
+The C-band active phased array antenna draws substantial peak electrical power (~3000 W) during high-resolution stripmap imaging passes. 
+- During imaging passes, battery voltage exhibits transient downward spikes, but must remain strictly above 24.0 V.
+- If battery voltage drops below 14.0 V during a radar burst, internal battery internal resistance (IR) surge or cell balancing malfunction is the primary root cause.
+
+2.2 Radiator Thermal Dissipation
+- The electronic steerable beam modules produce intense localized thermal dissipation.
+- If telemetry indicates battery temperature exceeding 50°C coinciding with battery voltage collapse, the spacecraft must immediately abort the imaging sequence and inhibit radar transmitters to prevent permanent cell degradation.
