@@ -63,13 +63,28 @@ class TextToSQLEngine:
             return ""
 
         errors = []
-        # Sort so that flash models are tried first, then pro
-        candidates = sorted(self.available_models, key=lambda m: 0 if "flash" in m.lower() else 1)
-        if not candidates:
-            candidates = ["gemini-2.0-flash", "gemini-1.5-flash", "models/gemini-1.5-flash"]
+        
+        # Proven active models prioritized for fast response and high availability
+        priority_models = [
+            "gemini-3.5-flash-lite",
+            "gemini-3.1-flash-lite",
+            "gemini-3.8-flash",
+            "gemini-3.5-flash",
+            "gemini-2.5-flash-lite",
+            "gemini-1.5-flash"
+        ]
+        
+        # Combine priority models with discovered models, excluding known deprecated models
+        deprecated = {"gemini-pro", "gemini-2.5-flash"}
+        seen = set()
+        candidates = []
+        for m in priority_models + self.available_models:
+            clean = m.replace("models/", "")
+            if clean not in seen and clean not in deprecated:
+                seen.add(clean)
+                candidates.append(m)
 
         for model_name in candidates:
-            # Try both raw name and with/without 'models/' prefix
             variations = [model_name]
             if model_name.startswith("models/"):
                 variations.append(model_name.replace("models/", ""))

@@ -1,6 +1,10 @@
 import streamlit as st
 import os
 import sys
+from dotenv import load_dotenv
+
+# Load local environment variables from .env
+load_dotenv()
 
 # Add project root to sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -171,11 +175,12 @@ with st.sidebar:
     st.caption("National Institute of Technology Durgapur | Def-Space AI 2026")
     
     st.divider()
-    api_key_input = st.text_input("Gemini API Key (Optional)", type="password", placeholder="Paste API Key or uses .env")
+    env_key = os.getenv("GEMINI_API_KEY", "")
+    api_key_input = st.text_input("Gemini API Key", value=env_key, type="password", placeholder="Paste API Key or loads from .env")
     if not api_key_input:
         st.info("⚡ **Offline / Demo Mode Active**\nRunning with built-in heuristic parsing, SQL safety guards, and local SOP document search.")
     else:
-        st.success("✨ **Connected to Gemini 1.5 Flash**")
+        st.success("✨ **Connected to Gemini Cloud AI**")
         
     st.divider()
     st.markdown("#### 🎯 Quick Viva Prompts")
