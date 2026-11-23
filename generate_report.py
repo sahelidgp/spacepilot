@@ -42,7 +42,7 @@ class NumberedCanvas(canvas.Canvas):
             
             # Running Header
             self.drawString(54, 11 * inch - 36, "SPACEPILOT: Generative AI Space Mission Intelligence Copilot")
-            self.drawRightString(8.5 * inch - 54, 11 * inch - 36, "B.Tech CSE Capstone Report · NIT Durgapur")
+            self.drawRightString(8.5 * inch - 54, 11 * inch - 36, "Def-Space AI Internship Report · BSERC & NIT Durgapur")
             self.setStrokeColor(colors.HexColor("#CBD5E1"))
             self.setLineWidth(0.5)
             self.line(54, 11 * inch - 40, 8.5 * inch - 54, 11 * inch - 40)
@@ -134,13 +134,13 @@ def build_pdf_elements():
     story.append(P("SPACEPILOT", ParagraphStyle('MainAppTitle', fontName='Helvetica-Bold', fontSize=28, leading=32, textColor=ACCENT, alignment=1)))
     story.append(Spacer(1, 5))
     story.append(P("A Generative AI Decision-Support Copilot for Space Mission Operations, Real-Time Telemetry Anomaly Triage, and Technical Knowledge Synthesis", title_style))
-    story.append(P("A Major Final-Year Project Report Submitted in Partial Fulfillment of the Requirements<br/>for the Degree of <b>Bachelor of Technology in Computer Science & Engineering</b>", subtitle_style))
+    story.append(P("An Official Internship Project Report Submitted for the <b>Def-Space Artificial Intelligence Internship 2026</b><br/>Awarded by the <b>Bharat Space Education Research Centre (BSERC)</b> in Collaboration with <b>NIT Durgapur</b>", subtitle_style))
     
     story.append(HRFlowable(width="85%", thickness=1, color=BORDER, spaceBefore=8, spaceAfter=18))
     
     candidate_data = [
         [P("<b>Submitted By:</b>", body_style), P("<b>Academic Institution:</b>", body_style)],
-        [P("<b>Saheli Mahanty</b><br/>B.Tech Final Year, Computer Science & Engineering<br/>National Institute of Technology Durgapur", body_style),
+        [P("<b>Saheli Mahanty</b><br/>Intern, Def-Space AI Programme 2026<br/>B.Tech, Computer Science & Engineering, NIT Durgapur", body_style),
          P("<b>Department of Computer Science & Engineering</b><br/>National Institute of Technology Durgapur<br/>Academic Session: 2025 – 2026", body_style)],
         [P("<b>Industry & Defense Context:</b>", body_style), P("<b>Project Links:</b>", body_style)],
         [P("<b>Bharat Space Education Research Centre (BSERC)</b><br/>Def-Space AI Internship Programme 2026<br/>Certificate ID: <code>BSERC-2026-AI-1035</code>", body_style),
@@ -167,11 +167,11 @@ def build_pdf_elements():
     story.append(HRFlowable(width="100%", thickness=1, color=SECONDARY, spaceBefore=2, spaceAfter=6))
     
     story.append(P(
-        "I express my profound gratitude to the faculty and administration of the <b>Department of Computer Science & Engineering, National Institute of Technology Durgapur</b>, for providing an academically stimulating environment, essential computational facilities, and rigorous intellectual training throughout my Bachelor of Technology tenure.",
+        "I express my profound gratitude to the faculty and administration of the <b>Department of Computer Science & Engineering, National Institute of Technology Durgapur</b>, for providing an academically stimulating environment, essential computational facilities, and continuous encouragement during my academic and internship endeavors.",
         body_style
     ))
     story.append(P(
-        "I am deeply indebted to the scientists, engineers, and mentors at the <b>Bharat Space Education Research Centre (BSERC)</b> for their guidance during the <i>Def-Space Artificial Intelligence Internship 2026</i> under the national theme <i>'Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership'</i>. The hands-on exposure to defense-space protocols, satellite subsystem standards, and telemetry analysis directly inspired the architecture of Spacepilot.",
+        "I am deeply indebted to the scientists, engineers, and mentors at the <b>Bharat Space Education Research Centre (BSERC)</b> for their guidance during the <i>Def-Space Artificial Intelligence Internship 2026</i> under the national theme <i>'Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership'</i>. The hands-on exposure to defense-space protocols, satellite subsystem standards, and telemetry analysis directly inspired the architecture of this internship project.",
         body_style
     ))
     story.append(P(
@@ -407,7 +407,7 @@ def build_pdf_elements():
         body_style
     ))
     story.append(P(
-        "The project directly fulfills and defends the academic and technological standards of the <b>Department of Computer Science & Engineering, National Institute of Technology Durgapur</b>, while upholding the vision of the <b>Def-Space Artificial Intelligence Programme 2026</b> organized by the <b>Bharat Space Education Research Centre (BSERC)</b>: <i>'Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership'</i>.",
+        "The project directly serves as the core technical deliverable defending the <b>Def-Space Artificial Intelligence Internship 2026</b> awarded by the <b>Bharat Space Education Research Centre (BSERC)</b> (Certificate ID: <code>BSERC-2026-AI-1035</code>), in collaboration with the <b>Department of Computer Science & Engineering, National Institute of Technology Durgapur</b>, under the national theme: <i>'Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership'</i>.",
         body_style
     ))
     
@@ -419,7 +419,7 @@ def build_pdf_elements():
     story.append(P("[3] Bharat Space Education Research Centre (BSERC). <i>Def-Space AI 2026: Satellite Anomaly Triage & Ground Command Operating Protocols</i>, Bangalore, 2026.", ParagraphStyle('Ref3', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=TEXT, spaceAfter=2.5)))
     story.append(P("[4] Consultative Committee for Space Data Systems (CCSDS). <i>Space Data Information Transfer Systems - Telemetry Channel Coding</i>, CCSDS 131.0-B-3, 2020.", ParagraphStyle('Ref4', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=TEXT, spaceAfter=2.5)))
     story.append(P("[5] Lewis, P., et al. <i>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</i>, Advances in Neural Information Processing Systems (NeurIPS), 2020.", ParagraphStyle('Ref5', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=TEXT, spaceAfter=2.5)))
-    story.append(P("[6] National Institute of Technology Durgapur. <i>Undergraduate Curriculum & Capstone Guidelines</i>, Department of Computer Science & Engineering, 2025–2026.", ParagraphStyle('Ref6', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=TEXT, spaceAfter=2.5)))
+    story.append(P("[6] Bharat Space Education Research Centre (BSERC). <i>Def-Space Artificial Intelligence Internship Project Guidelines & Aerospace AI Protocols</i>, Bangalore, 2026.", ParagraphStyle('Ref6', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=TEXT, spaceAfter=2.5)))
 
     return story
 

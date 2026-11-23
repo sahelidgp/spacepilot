@@ -9,11 +9,11 @@
 [![Theme-Def--Space](https://img.shields.io/badge/Theme-Def--Space%20AI%202026-orange.svg)](#context--motivation)
 
 > 🚀 **Live Deployment URL:** **[https://spacepilot-isro.streamlit.app/](https://spacepilot-isro.streamlit.app/)**  
-> 📄 **Academic Project Report (PDF):** **[Spacepilot_Project_Report.pdf](Spacepilot_Project_Report.pdf)** (Includes Internship Certificate & Module Workings)
+> 📄 **Def-Space AI Internship Report (PDF):** **[Spacepilot_Project_Report.pdf](Spacepilot_Project_Report.pdf)** (Includes Official BSERC Certificate & Technical Workings)
 
 **Spacepilot** is a unified Generative AI decision-support platform engineered for aerospace operations, defense earth observation, and satellite health monitoring. It bridges the gap between structured satellite telemetry databases and voluminous flight operating documentation.
 
-Developed by **Saheli Mahanty**, National Institute of Technology Durgapur, as a B.Tech Computer Science and Engineering Capstone, inspired by the **Def-Space Artificial Intelligence Programme 2026** organized by the **Bharat Space Education Research Centre (BSERC)** under the theme *"Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership"*.
+Developed by **Saheli Mahanty**, National Institute of Technology Durgapur, as the core project for the **Def-Space Artificial Intelligence Internship 2026** awarded by the **Bharat Space Education Research Centre (BSERC)** under the theme *"Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership"*.
 
 ---
 
@@ -308,11 +308,11 @@ spacepilot/
 
 ---
 
-## 🎓 Academic Defense & Acknowledgments
+## 🎓 Internship Defense & Acknowledgments
 
-This project serves as the final year capstone for the **Department of Computer Science & Engineering, National Institute of Technology Durgapur**. 
+This project serves as the core technical project for the **Def-Space Artificial Intelligence Internship 2026** awarded by the **Bharat Space Education Research Centre (BSERC)** in affiliation with the **Department of Computer Science & Engineering, National Institute of Technology Durgapur**. 
 
-Special acknowledgment to the **Bharat Space Education Research Centre (BSERC)** for the foundational domain exposure during the **Def-Space Artificial Intelligence Internship 2026**.
+Special acknowledgment to the **Bharat Space Education Research Centre (BSERC)** mentors and scientists for the foundational domain exposure during the **Def-Space Artificial Intelligence Programme 2026**.
 
 **Author:** Saheli Mahanty  
 **Institution:** National Institute of Technology Durgapur  
