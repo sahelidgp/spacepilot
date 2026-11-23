@@ -155,8 +155,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize Session State & Singletons
-@st.cache_resource
+# Initialize Services without caching to ensure fresh modules & keys
 def init_services(api_key=None):
     db = DatabaseManager()
     rag = RAGEngine()
@@ -380,7 +379,11 @@ with tab2:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚨 Generate Ground Command Triage Briefing (RAG + GenAI)", type="primary"):
             with st.spinner("Cross-referencing flight manuals, SOP thresholds, and synthesizing diagnosis..."):
-                result = anomaly_engine.diagnose_anomaly(selected_record, llm_engine=sql_engine)
+                try:
+                    result = anomaly_engine.diagnose_anomaly(selected_record, llm_engine=sql_engine)
+                except Exception as e:
+                    st.warning(f"Note: Cloud LLM response encountered an issue ({e}). Serving offline SOP diagnosis.")
+                    result = anomaly_engine.diagnose_anomaly(selected_record, llm_engine=None)
                 
                 st.markdown("""
                 <div class="diagnosis-box">
@@ -414,7 +417,11 @@ with tab3:
     
     if search_rag and rag_question:
         with st.spinner("Searching embedded space flight manuals and extracting citations..."):
-            rag_result = rag.answer_question(rag_question, llm_engine=sql_engine)
+            try:
+                rag_result = rag.answer_question(rag_question, llm_engine=sql_engine)
+            except Exception as e:
+                st.warning(f"Note: Cloud LLM response encountered an issue ({e}). Serving offline manual search.")
+                rag_result = rag.answer_question(rag_question, llm_engine=None)
             
             st.markdown("##### 🤖 Mission Knowledge Synthesis")
             st.markdown(f"""
