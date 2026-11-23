@@ -22,11 +22,11 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom High-Tech Mission Control CSS
+# Custom Black & Violet Cosmic Space Theme CSS
 st.markdown("""
 <style>
-    /* Global Background and Typography */
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap');
+    /* Typography */
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Outfit', sans-serif;
@@ -36,125 +36,176 @@ st.markdown("""
         font-family: 'JetBrains Mono', monospace !important;
     }
 
-    /* Main Title Styling */
+    /* Cosmic Deep Black & Violet Backgrounds */
+    [data-testid="stAppViewContainer"] {
+        background: radial-gradient(circle at 50% 0%, #16072D 0%, #090314 55%, #040108 100%) !important;
+        color: #F5F3FF;
+    }
+
+    [data-testid="stHeader"] {
+        background: transparent !important;
+    }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0F051F 0%, #06010D 100%) !important;
+        border-right: 1px solid rgba(168, 85, 247, 0.22) !important;
+    }
+
+    /* Main Hero Title Styling */
     .hero-title {
-        font-size: 2.6rem;
-        font-weight: 700;
-        background: linear-gradient(90deg, #60A5FA 0%, #A78BFA 50%, #F472B6 100%);
+        font-size: 2.7rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #C084FC 0%, #E879F9 50%, #A78BFA 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
         letter-spacing: -0.5px;
+        filter: drop-shadow(0 0 25px rgba(192, 132, 252, 0.35));
     }
     
     .hero-subtitle {
         font-size: 1.05rem;
-        color: #94A3B8;
+        color: #C4B5FD;
         margin-bottom: 24px;
         font-weight: 300;
+        opacity: 0.9;
     }
 
-    /* Glassmorphism KPI Stat Card */
+    /* Cosmic Glassmorphism KPI Stat Cards */
     .kpi-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(28, 11, 52, 0.75) 0%, rgba(13, 5, 25, 0.88) 100%);
+        border: 1px solid rgba(168, 85, 247, 0.28);
+        border-radius: 14px;
         padding: 16px 20px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-        transition: transform 0.2s ease, border-color 0.2s ease;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 30px rgba(124, 58, 237, 0.14);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     }
     .kpi-card:hover {
-        transform: translateY(-2px);
-        border-color: rgba(96, 165, 250, 0.4);
+        transform: translateY(-3px);
+        border-color: rgba(216, 180, 254, 0.65);
+        box-shadow: 0 12px 35px rgba(168, 85, 247, 0.32);
     }
     .kpi-title {
         font-size: 0.82rem;
-        color: #94A3B8;
+        color: #A78BFA;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.09em;
         margin-bottom: 6px;
         font-weight: 600;
     }
     .kpi-value {
-        font-size: 1.6rem;
+        font-size: 1.65rem;
         font-weight: 700;
-        color: #F8FAFC;
+        color: #FAF5FF;
         font-family: 'JetBrains Mono', monospace;
+        text-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
     }
     .kpi-sub {
         font-size: 0.75rem;
-        color: #38BDF8;
+        color: #C084FC;
         margin-top: 4px;
     }
 
-    /* Status Badges */
+    /* Violet Cosmic Status Badges */
     .badge-primary {
-        background: rgba(59, 130, 246, 0.15);
-        color: #60A5FA;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        padding: 4px 10px;
+        background: rgba(147, 51, 234, 0.22);
+        color: #E9D5FF;
+        border: 1px solid rgba(168, 85, 247, 0.45);
+        padding: 5px 12px;
         border-radius: 9999px;
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
     }
     .badge-warning {
-        background: rgba(245, 158, 11, 0.15);
-        color: #FBBF24;
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        padding: 4px 10px;
+        background: rgba(245, 158, 11, 0.18);
+        color: #FDE68A;
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        padding: 5px 12px;
         border-radius: 9999px;
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         font-weight: 600;
     }
     .badge-critical {
-        background: rgba(239, 68, 68, 0.18);
-        color: #F87171;
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        padding: 4px 10px;
+        background: rgba(244, 63, 94, 0.22);
+        color: #FECDD3;
+        border: 1px solid rgba(244, 63, 94, 0.45);
+        padding: 6px 14px;
         border-radius: 9999px;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         font-weight: 600;
+        box-shadow: 0 0 20px rgba(244, 63, 94, 0.25);
     }
     .pulsing-dot {
         height: 8px;
         width: 8px;
-        background-color: #10B981;
+        background-color: #C084FC;
         border-radius: 50%;
         display: inline-block;
-        box-shadow: 0 0 8px #10B981;
+        box-shadow: 0 0 8px #C084FC, 0 0 16px #9333EA;
     }
 
-    /* Diagnosis Panel */
+    /* Cosmic Diagnosis Panel */
     .diagnosis-box {
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-left: 4px solid #EF4444;
-        border-radius: 8px;
-        padding: 20px;
+        background: linear-gradient(135deg, rgba(32, 9, 52, 0.9) 0%, rgba(14, 4, 25, 0.95) 100%);
+        border: 1px solid rgba(244, 63, 94, 0.4);
+        border-left: 4px solid #E11D48;
+        border-radius: 12px;
+        padding: 22px;
         margin-top: 15px;
+        box-shadow: 0 8px 30px rgba(225, 29, 72, 0.15);
     }
 
-    /* RAG Document Card */
-    .doc-card {
-        background: rgba(30, 41, 59, 0.5);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 10px;
+    /* Primary Gradient Buttons */
+    .stButton > button[kind="primary"], .stButton > button {
+        background: linear-gradient(135deg, #7C3AED 0%, #9333EA 50%, #C026D3 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 9px !important;
+        font-weight: 600 !important;
+        padding: 8px 18px !important;
+        box-shadow: 0 4px 18px rgba(147, 51, 234, 0.35) !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 26px rgba(192, 132, 252, 0.55) !important;
     }
 
-    /* Clean Streamlit tab styling */
+    /* Streamlit Tabs with Violet Glow */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 10px;
+        background: transparent;
+        border-bottom: 1px solid rgba(168, 85, 247, 0.2);
     }
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px 8px 0px 0px;
-        padding: 10px 18px;
+        border-radius: 10px 10px 0px 0px;
+        padding: 10px 20px;
         font-weight: 600;
+        color: #C4B5FD !important;
+        background: transparent;
+        transition: all 0.2s ease;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #FAF5FF !important;
+        background: rgba(147, 51, 234, 0.18) !important;
+        border-bottom: 2px solid #C084FC !important;
+        box-shadow: 0 -4px 15px rgba(168, 85, 247, 0.2);
+    }
+
+    /* Inputs with Violet Glow */
+    div[data-baseweb="input"] {
+        background-color: #0E051D !important;
+        border: 1px solid rgba(168, 85, 247, 0.3) !important;
+        border-radius: 9px !important;
+    }
+    div[data-baseweb="input"]:focus-within {
+        border-color: #C084FC !important;
+        box-shadow: 0 0 16px rgba(192, 132, 252, 0.35) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -322,13 +373,14 @@ with tab1:
                                     y=chart_col,
                                     color='name' if 'name' in data.columns else None,
                                     title=f"Telemetry Stream Analysis: {chart_col.replace('_', ' ').title()}",
-                                    template="plotly_dark"
+                                    template="plotly_dark",
+                                    color_discrete_sequence=["#C084FC", "#E879F9", "#818CF8", "#F472B6", "#A78BFA"]
                                 )
                                 fig.update_traces(line=dict(width=2.5))
                                 fig.update_layout(
-                                    paper_bgcolor="rgba(15, 23, 42, 0.6)",
-                                    plot_bgcolor="rgba(15, 23, 42, 0.4)",
-                                    font=dict(family="Outfit, sans-serif")
+                                    paper_bgcolor="rgba(14, 5, 29, 0.75)",
+                                    plot_bgcolor="rgba(9, 3, 19, 0.75)",
+                                    font=dict(family="Outfit, sans-serif", color="#F5F3FF")
                                 )
                                 st.plotly_chart(fig, use_container_width=True)
                     except Exception:
