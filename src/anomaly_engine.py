@@ -53,7 +53,7 @@ class AnomalyEngine:
 
         # Generate diagnosis
         if llm_engine and getattr(llm_engine, 'client', None):
-            prompt = f"""You are AstraOps Flight Triage AI. Analyze this satellite telemetry anomaly using the retrieved SOP flight manual.
+            prompt = f"""You are Spacepilot Flight Triage AI. Analyze this satellite telemetry anomaly using the retrieved SOP flight manual.
 
 TELEMETRY DATA:
 - Satellite: {sat_name}

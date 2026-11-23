@@ -52,7 +52,7 @@ class TextToSQLEngine:
 
         # If LLM client is available, use prompt engineering
         if self.client:
-            prompt = f"""You are AstraOps, an expert aerospace database engineer.
+            prompt = f"""You are Spacepilot, an expert aerospace database engineer.
 Convert the user's natural language question into a valid, optimized SQLite SQL query.
 
 DATABASE SCHEMA:
@@ -117,7 +117,7 @@ Return ONLY the corrected raw SQL query. No markdown, no commentary.
         if not self.client:
             return f"Query executed successfully against telemetry database. Found {data_summary.count('(') if isinstance(data_summary, str) else len(data_summary)} matching records."
 
-        prompt = f"""You are AstraOps, a space mission intelligence officer.
+        prompt = f"""You are Spacepilot, a space mission intelligence officer.
 Summarize the findings of this database query in 2-3 clear, executive bullet points.
 
 USER QUERY: {user_question}

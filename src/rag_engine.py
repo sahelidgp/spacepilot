@@ -77,7 +77,7 @@ class RAGEngine:
             citations = list(set([doc['source'] for doc in retrieved_docs]))
 
         if llm_engine and getattr(llm_engine, 'client', None):
-            prompt = f"""You are AstraOps, an intelligent Space Mission Knowledge Copilot.
+            prompt = f"""You are Spacepilot, an intelligent Space Mission Knowledge Copilot.
 Answer the user's question using ONLY the provided mission documentation.
 
 GROUND RULES:

@@ -12,7 +12,7 @@ from src.rag_engine import RAGEngine
 
 # Page Configuration
 st.set_page_config(
-    page_title="AstraOps | GenAI Space Mission Copilot",
+    page_title="Spacepilot | GenAI Space Mission Copilot",
     page_icon="🛰️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -57,12 +57,12 @@ def init_services(api_key=None):
 # Sidebar Configuration
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/satellite-in-orbit.png", width=64)
-    st.title("AstraOps Config")
+    st.title("Spacepilot Config")
     st.markdown("**Def-Space Mission Copilot**")
     st.markdown('<span class="badge">Viksit Bharat Def-Space 2026</span>', unsafe_allow_html=True)
     
     api_key_input = st.text_input("Gemini API Key (Optional)", type="password", placeholder="Enter key or uses .env")
-    st.info("💡 If no API key is provided, AstraOps runs in **Offline / Demo Mode** using local heuristics and document rankers.")
+    st.info("💡 If no API key is provided, Spacepilot runs in **Offline / Demo Mode** using local heuristics and document rankers.")
     
     st.divider()
     st.markdown("### 🎯 Quick Viva Prompts")
@@ -80,7 +80,7 @@ with st.sidebar:
 db, rag, sql_engine, anomaly_engine = init_services(api_key=api_key_input)
 
 # Header Section
-st.markdown('<h1 class="main-title">🛰️ AstraOps – Space Mission Intelligence Copilot</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-title">🛰️ Spacepilot – Space Mission Intelligence Copilot</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">A Unified GenAI Platform combining <b>Natural Language-to-SQL</b>, <b>Telemetry Anomaly Triage</b>, and <b>Mission Knowledge RAG</b>.</p>', unsafe_allow_html=True)
 
 # Main Application Tabs
@@ -215,4 +215,4 @@ with tab3:
 
 # Footer
 st.divider()
-st.caption("AstraOps v1.0.0 | National Institute of Technology Durgapur | Def-Space Artificial Intelligence Capstone")
+st.caption("Spacepilot v1.0.0 | National Institute of Technology Durgapur | Def-Space Artificial Intelligence Capstone")

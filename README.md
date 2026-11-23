@@ -1,4 +1,4 @@
-# AstraOps: GenAI-Powered Space Mission Intelligence Copilot 🛰️
+# Spacepilot: GenAI-Powered Space Mission Intelligence Copilot 🛰️
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Framework-Streamlit](https://img.shields.io/badge/Frontend-Streamlit-FF4B4B.svg)](https://streamlit.io/)
@@ -6,7 +6,7 @@
 [![License-MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Theme-Def--Space](https://img.shields.io/badge/Theme-Def--Space%20AI%202026-orange.svg)](#context--motivation)
 
-**AstraOps** is a unified Generative AI decision-support platform engineered for aerospace operations, defense earth observation, and satellite health monitoring. It bridges the gap between structured satellite telemetry databases and voluminous flight operating documentation.
+**Spacepilot** is a unified Generative AI decision-support platform engineered for aerospace operations, defense earth observation, and satellite health monitoring. It bridges the gap between structured satellite telemetry databases and voluminous flight operating documentation.
 
 Developed by **Saheli Mahanty**, National Institute of Technology Durgapur, as a B.Tech Computer Science and Engineering Capstone, inspired by the **Def-Space Artificial Intelligence Programme 2026** organized by the **Bharat Space Education Research Centre (BSERC)** under the theme *"Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership"*.
 
@@ -18,7 +18,7 @@ During space and defense operations, flight directors and ground station control
 1. **Query Friction:** Mission operators cannot afford to manually write complex multi-table SQL joins during time-critical orbital passes or anomaly alerts.
 2. **Knowledge Silos:** Real-time sensor telemetry (battery drops, temperature excursions, gyroscope drift) is disconnected from official flight operating manuals, leading to delayed anomaly triage.
 
-**AstraOps** resolves this by integrating **Natural Language-to-SQL (NL2SQL)**, **Automated Telemetry Anomaly Detection**, and **Retrieval-Augmented Generation (RAG)** into an intuitive mission copilot.
+**Spacepilot** resolves this by integrating **Natural Language-to-SQL (NL2SQL)**, **Automated Telemetry Anomaly Detection**, and **Retrieval-Augmented Generation (RAG)** into an intuitive mission copilot.
 
 ---
 
@@ -87,8 +87,8 @@ During space and defense operations, flight directors and ground station control
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/sahelimahanty/astraops.git
-cd astraops
+git clone https://github.com/sahelimahanty/Spacepilot.git
+cd Spacepilot
 ```
 
 ### 2. Set Up Virtual Environment (Recommended)
@@ -114,7 +114,7 @@ Add your free Gemini API key:
 ```env
 GEMINI_API_KEY=your_actual_api_key_here
 ```
-*(Note: AstraOps includes an intelligent offline/demo mode, so the application runs even without an active API key!)*
+*(Note: Spacepilot includes an intelligent offline/demo mode, so the application runs even without an active API key!)*
 
 ### 5. Generate Database & Launch Application
 ```bash
@@ -141,7 +141,7 @@ streamlit run app.py
 ## 📂 Project Structure
 
 ```
-astraops/
+Spacepilot/
 │
 ├── .env.example               # Environment variable template
 ├── .gitignore                 # Standard Python/Git ignore rules
