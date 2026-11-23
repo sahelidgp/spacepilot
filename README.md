@@ -1,14 +1,24 @@
 # Spacepilot: GenAI-Powered Space Mission Intelligence Copilot 🛰️
 
+[![Live-Demo](https://img.shields.io/badge/Live%20Demo-spacepilot--isro.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit)](https://spacepilot-isro.streamlit.app/)
+
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Framework-Streamlit](https://img.shields.io/badge/Frontend-Streamlit-FF4B4B.svg)](https://streamlit.io/)
 [![Database-SQLite](https://img.shields.io/badge/Database-SQLite-003B57.svg)](https://www.sqlite.org/)
 [![License-MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Theme-Def--Space](https://img.shields.io/badge/Theme-Def--Space%20AI%202026-orange.svg)](#context--motivation)
 
+> 🚀 **Live Deployment URL:** **[https://spacepilot-isro.streamlit.app/](https://spacepilot-isro.streamlit.app/)**
+
 **Spacepilot** is a unified Generative AI decision-support platform engineered for aerospace operations, defense earth observation, and satellite health monitoring. It bridges the gap between structured satellite telemetry databases and voluminous flight operating documentation.
 
 Developed by **Saheli Mahanty**, National Institute of Technology Durgapur, as a B.Tech Computer Science and Engineering Capstone, inspired by the **Def-Space Artificial Intelligence Programme 2026** organized by the **Bharat Space Education Research Centre (BSERC)** under the theme *"Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership"*.
+
+---
+
+## 🖥️ Live Application Interface
+
+![Spacepilot Mission Intelligence Dashboard](assets/spacepilot_dashboard.png)
 
 ---
 
@@ -87,8 +97,8 @@ During space and defense operations, flight directors and ground station control
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/sahelimahanty/Spacepilot.git
-cd Spacepilot
+git clone https://github.com/sahelidgp/spacepilot.git
+cd spacepilot
 ```
 
 ### 2. Set Up Virtual Environment (Recommended)
@@ -141,13 +151,16 @@ streamlit run app.py
 ## 📂 Project Structure
 
 ```
-Spacepilot/
+spacepilot/
 │
 ├── .env.example               # Environment variable template
 ├── .gitignore                 # Standard Python/Git ignore rules
 ├── README.md                  # Complete project documentation
 ├── requirements.txt           # Python package dependencies
 ├── app.py                     # Streamlit multi-tab user interface
+│
+├── assets/                    # Dashboard previews and UI media
+│   └── spacepilot_dashboard.png
 │
 ├── data/
 │   ├── generate_telemetry.py  # Synthetic telemetry generator with injected anomalies
@@ -159,7 +172,7 @@ Spacepilot/
 │
 └── src/
     ├── __init__.py
-    ├── database.py            # SQLite connection, schema extractor, and query validator
+    ├── database.py            # SQLite connection, schema extractor, CSV ingestion & validator
     ├── text_to_sql.py         # Natural Language to SQL converter with self-correction
     ├── anomaly_engine.py      # Statistical anomaly scanner and triage engine
     └── rag_engine.py          # Document chunking, search, and cited Q&A
