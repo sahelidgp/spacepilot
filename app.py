@@ -203,6 +203,7 @@ with st.sidebar:
     """)
 
 db, rag, sql_engine, anomaly_engine = init_services(api_key=api_key_input)
+rag_engine = rag
 
 # Top Hero Section
 st.markdown('<div class="hero-title">🛰️ Spacepilot Mission Intelligence</div>', unsafe_allow_html=True)
@@ -413,7 +414,7 @@ with tab3:
     
     if search_rag and rag_question:
         with st.spinner("Searching embedded space flight manuals and extracting citations..."):
-            rag_result = rag_engine.answer_question(rag_question, llm_engine=sql_engine)
+            rag_result = rag.answer_question(rag_question, llm_engine=sql_engine)
             
             st.markdown("##### 🤖 Mission Knowledge Synthesis")
             st.markdown(f"""
