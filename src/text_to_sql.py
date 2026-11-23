@@ -5,8 +5,11 @@ from src.database import DatabaseManager
 class TextToSQLEngine:
     def __init__(self, db_manager: DatabaseManager = None, api_key: str = None):
         self.db = db_manager or DatabaseManager()
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+        raw_key = api_key or os.getenv("GEMINI_API_KEY")
+        self.api_key = raw_key.strip() if raw_key else None
         self.client = None
+        self.sdk_type = None
+        self.last_error = None
         self._init_llm()
 
     def _init_llm(self):
@@ -14,51 +17,63 @@ class TextToSQLEngine:
         if not self.api_key:
             return
 
+        # 1. Prefer classic google.generativeai first as it has 100% stable support for AI Studio keys
         try:
-            # Check for new google-genai SDK
+            import google.generativeai as genai_legacy
+            genai_legacy.configure(api_key=self.api_key)
+            self.client = genai_legacy
+            self.sdk_type = "google-generativeai"
+            return
+        except ImportError:
+            pass
+
+        # 2. Fallback to new google.genai
+        try:
             from google import genai
             self.client = genai.Client(api_key=self.api_key, http_options={'api_version': 'v1beta'})
             self.sdk_type = "google-genai"
-        except ImportError:
-            try:
-                # Check for legacy google-generativeai SDK
-                import google.generativeai as genai_legacy
-                genai_legacy.configure(api_key=self.api_key)
-                self.client = genai_legacy
-                self.sdk_type = "google-generativeai"
-            except ImportError:
-                self.client = None
-                self.sdk_type = None
+        except Exception as e:
+            self.client = None
+            self.sdk_type = None
+            self.last_error = str(e)
 
     def _generate_llm_response(self, prompt: str) -> str:
         """Helper to invoke LLM with resilient multi-model fallback."""
-        if not self.client:
+        if not self.api_key:
             return ""
 
-        # Models to attempt in order of speed, capability, and availability
-        models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+        models_to_try = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-pro"]
+        self.last_error = None
 
-        if self.sdk_type == "google-genai":
-            for model_name in models_to_try:
-                try:
-                    response = self.client.models.generate_content(
-                        model=model_name,
-                        contents=prompt
-                    )
-                    if hasattr(response, 'text') and response.text:
-                        return response.text
-                except Exception:
-                    continue
-
-        elif self.sdk_type == "google-generativeai":
+        # Try google-generativeai
+        if self.sdk_type == "google-generativeai":
             for model_name in models_to_try:
                 try:
                     model = self.client.GenerativeModel(model_name)
                     response = model.generate_content(prompt)
                     if hasattr(response, 'text') and response.text:
                         return response.text
-                except Exception:
+                except Exception as e:
+                    self.last_error = f"{model_name}: {e}"
                     continue
+
+        # Try google-genai
+        try:
+            from google import genai
+            client = genai.Client(api_key=self.api_key, http_options={'api_version': 'v1beta'})
+            for model_name in models_to_try:
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=prompt
+                    )
+                    if hasattr(response, 'text') and response.text:
+                        return response.text
+                except Exception as e:
+                    self.last_error = f"genai {model_name}: {e}"
+                    continue
+        except Exception as e:
+            self.last_error = f"genai init: {e}"
 
         return ""
 

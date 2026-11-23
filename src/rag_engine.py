@@ -115,11 +115,12 @@ USER QUESTION:
 """
             answer = llm_engine._generate_llm_response(prompt).strip()
             if not answer:
+                err_hint = f"\n\n*(Notice: LLM API issue detected: {getattr(llm_engine, 'last_error', 'No response')})*" if getattr(llm_engine, 'last_error', None) else ""
                 if retrieved_docs:
                     top_hit = retrieved_docs[0]
-                    answer = f"**From {top_hit['source']}:**\n\n{top_hit['content']}"
+                    answer = f"**From {top_hit['source']}:**\n\n{top_hit['content']}{err_hint}"
                 else:
-                    answer = "The available flight manuals do not contain information regarding this topic."
+                    answer = f"The available flight manuals do not contain information regarding this topic.{err_hint}"
         else:
             # Fallback answer synthesis
             if retrieved_docs:
