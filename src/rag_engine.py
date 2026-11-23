@@ -43,9 +43,14 @@ class RAGEngine:
         if not self.chunks:
             return []
 
-        query_tokens = set(re.findall(r"\w+", query.lower()))
+        # Filter out common stop words to avoid false positive matches on words like 'what', 'is'
+        stop_words = {"what", "is", "are", "the", "a", "an", "of", "in", "to", "for", "and", "about", "how", "tell", "me"}
+        raw_tokens = set(re.findall(r"\w+", query.lower()))
+        query_tokens = raw_tokens - stop_words
+        
+        # If user only typed stop words, return empty
         if not query_tokens:
-            return self.chunks[:top_k]
+            return []
 
         scored_chunks = []
         for chunk in self.chunks:
