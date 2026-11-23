@@ -202,36 +202,32 @@ def build_pdf_elements():
     story.append(PageBreak())
 
     # -------------------------------------------------------------------------
-    # PAGE 4: 1. INTRODUCTION & PROBLEM STATEMENT
+    # PAGE 4: 1. INTRODUCTION, PROBLEM STATEMENT & SYSTEM FLOW DIAGRAM
     # -------------------------------------------------------------------------
     story.append(P("1. INTRODUCTION & PROBLEM STATEMENT", h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=SECONDARY, spaceBefore=2, spaceAfter=5))
     
     story.append(P("1.1 Background & Internship Context", h2_style))
     story.append(P(
-        "I completed the 15-day <i>Def-Space Artificial Intelligence Internship 2026</i> under the <b>Bharat Space Education Research Centre (BSERC)</b>. The internship covered satellite telemetry structures, aerospace defense systems, orbit dynamics, and the role of modern AI in mission ground operations. This project, titled <b>Spacepilot</b>, is the practical system I developed to apply Generative AI to satellite operations and submit for my 7th semester internship credits at the National Institute of Technology Durgapur.",
+        "I completed the 15-day <i>Def-Space Artificial Intelligence Internship 2026</i> under the <b>Bharat Space Education Research Centre (BSERC)</b>. The internship covered satellite telemetry structures, aerospace defense systems, orbit dynamics, and the role of modern AI in ground operations. This project, <b>Spacepilot</b>, is the practical system I developed to apply Generative AI to satellite ground control operations and submit for my 7th semester internship credits at the National Institute of Technology Durgapur.",
         body_style
     ))
     
-    story.append(P("1.2 Problem Statement", h2_style))
+    story.append(P("1.2 Problem Statement & Operational Challenges", h2_style))
+    story.append(P("• <b>Manual SQL Query Overhead:</b> During short 10-to-15 minute satellite passes, ground teams must query complex multi-table telemetry databases by hand. Writing SQL queries manually under severe time pressure often leads to syntax errors and delayed operational insights.", bullet_style))
+    story.append(P("• <b>Knowledge Silos & Disconnected Manuals:</b> When sensor parameters deviate from normal thresholds, operators must cross-reference lengthy flight manuals to find emergency recovery steps, leading to communication delays.", bullet_style))
+    
+    story.append(P("1.3 System Architecture & Workflow", h2_style))
     story.append(P(
-        "In satellite ground stations, operators monitor health parameters such as power levels, thermal readings, and gyroscope stability. During operational passes, communication windows with the satellite are short (often only 10 to 15 minutes). Ground teams encounter two difficulties:",
-        body_style
-    ))
-    story.append(P("• <b>Manual SQL Query Overhead:</b> Looking up specific telemetry conditions (e.g., <i>'Show all satellites with battery voltage under 15V'</i>) requires writing multi-table SQL joins manually. Writing SQL by hand under time pressure is prone to syntax errors.", bullet_style))
-    story.append(P("• <b>Disconnected Operating Manuals:</b> When telemetry values deviate from normal ranges, operators must find the relevant section in hundreds of pages of flight manuals to determine what ground commands to uplink.", bullet_style))
-    
-    story.append(P("1.3 System Overview & Technology Stack", h2_style))
-    story.append(P(
-        "To solve these issues, Spacepilot combines structured database querying, threshold-based anomaly scanning, and document retrieval into a unified Streamlit interface. The tech stack includes: Python 3.12, Streamlit (web interface with dark theme), SQLite3 and Pandas (database and data wrangling), SQLGlot (query safety validation), Google Gemini API (LLM inference), and PyPDF (document ingestion).",
+        "To solve these challenges, Spacepilot combines structured database querying, automated anomaly threshold scanning, and document retrieval into a unified Streamlit interface, as illustrated in the system flow diagram below:",
         body_style
     ))
     
-    dash_img_path = os.path.join(ASSETS_DIR, "spacepilot_dashboard.png")
-    if os.path.exists(dash_img_path):
-        story.append(Spacer(1, 3))
-        story.append(Image(dash_img_path, width=7.1*inch, height=3.6*inch))
-        story.append(P("Figure 1: Spacepilot Web Application Dashboard running live on Streamlit Cloud.", caption_style))
+    flow_img_path = os.path.join(ASSETS_DIR, "system_flowchart.png")
+    if os.path.exists(flow_img_path):
+        story.append(Spacer(1, 2))
+        story.append(Image(flow_img_path, width=7.1*inch, height=3.9*inch))
+        story.append(P("Figure 1: Spacepilot End-to-End System Architecture and Data Flow Diagram.", caption_style))
 
     story.append(PageBreak())
 
@@ -381,17 +377,12 @@ def build_pdf_elements():
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
     ]))
     story.append(t_bench)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 4))
 
-    story.append(P("5.2 Response Latency & Offline Fallback", h2_style))
-    story.append(P(
-        "• <b>Response Speed:</b> Using Google Gemini's <code>gemini-3.5-flash-lite</code> model, average response time across SQL translation and RAG search was <b>0.82 seconds</b>.",
-        body_style
-    ))
-    story.append(P(
-        "• <b>Offline Capability:</b> If the API key is not entered or quota is unavailable, the application uses built-in rule-based heuristic SQL generation and local keyword document search so that the interface continues to operate.",
-        body_style
-    ))
+    dash_img_path = os.path.join(ASSETS_DIR, "spacepilot_dashboard.png")
+    if os.path.exists(dash_img_path):
+        story.append(Image(dash_img_path, width=7.1*inch, height=3.3*inch))
+        story.append(P("Figure 8: Spacepilot Web Application Dashboard Overview running live on Streamlit Cloud.", caption_style))
 
     story.append(PageBreak())
 
