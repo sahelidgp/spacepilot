@@ -9,6 +9,18 @@ load_dotenv()
 # Add project root to sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Force dynamic reloading of src modules on edit
+import importlib
+import src.database
+import src.text_to_sql
+import src.anomaly_engine
+import src.rag_engine
+
+importlib.reload(src.database)
+importlib.reload(src.text_to_sql)
+importlib.reload(src.anomaly_engine)
+importlib.reload(src.rag_engine)
+
 from src.database import DatabaseManager
 from src.text_to_sql import TextToSQLEngine
 from src.anomaly_engine import AnomalyEngine
