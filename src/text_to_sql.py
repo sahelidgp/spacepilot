@@ -9,72 +9,93 @@ class TextToSQLEngine:
         self.api_key = raw_key.strip() if raw_key else None
         self.client = None
         self.sdk_type = None
+        self.available_models = []
         self.last_error = None
         self._init_llm()
 
     def _init_llm(self):
-        """Initializes Gemini client if API key is provided."""
+        """Initializes Gemini client and dynamically discovers available models for this key."""
         if not self.api_key:
             return
 
-        # 1. Prefer classic google.generativeai first as it has 100% stable support for AI Studio keys
+        # 1. Try google.genai with dynamic model discovery
+        try:
+            from google import genai
+            self.client = genai.Client(api_key=self.api_key)
+            self.sdk_type = "google-genai"
+            try:
+                for m in self.client.models.list():
+                    name = getattr(m, 'name', '')
+                    if name and ("gemini" in name.lower() or "flash" in name.lower()):
+                        self.available_models.append(name)
+            except Exception:
+                pass
+            
+            if not self.available_models:
+                self.available_models = ["gemini-2.0-flash", "gemini-1.5-flash", "models/gemini-1.5-flash", "gemini-1.5-pro"]
+            return
+        except Exception:
+            pass
+
+        # 2. Try legacy google.generativeai
         try:
             import google.generativeai as genai_legacy
             genai_legacy.configure(api_key=self.api_key)
             self.client = genai_legacy
             self.sdk_type = "google-generativeai"
-            return
-        except ImportError:
-            pass
-
-        # 2. Fallback to new google.genai
-        try:
-            from google import genai
-            self.client = genai.Client(api_key=self.api_key, http_options={'api_version': 'v1beta'})
-            self.sdk_type = "google-genai"
+            try:
+                for m in self.client.list_models():
+                    if 'generateContent' in m.supported_generation_methods:
+                        self.available_models.append(m.name)
+            except Exception:
+                pass
+            
+            if not self.available_models:
+                self.available_models = ["models/gemini-1.5-flash", "models/gemini-1.5-pro", "gemini-1.5-flash"]
         except Exception as e:
             self.client = None
             self.sdk_type = None
             self.last_error = str(e)
 
     def _generate_llm_response(self, prompt: str) -> str:
-        """Helper to invoke LLM with resilient multi-model fallback."""
-        if not self.api_key:
+        """Helper to invoke LLM with resilient dynamic model fallback."""
+        if not self.api_key or not self.client:
             return ""
 
-        models_to_try = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-pro"]
-        self.last_error = None
+        errors = []
+        # Sort so that flash models are tried first, then pro
+        candidates = sorted(self.available_models, key=lambda m: 0 if "flash" in m.lower() else 1)
+        if not candidates:
+            candidates = ["gemini-2.0-flash", "gemini-1.5-flash", "models/gemini-1.5-flash"]
 
-        # Try google-generativeai
-        if self.sdk_type == "google-generativeai":
-            for model_name in models_to_try:
+        for model_name in candidates:
+            # Try both raw name and with/without 'models/' prefix
+            variations = [model_name]
+            if model_name.startswith("models/"):
+                variations.append(model_name.replace("models/", ""))
+            else:
+                variations.append(f"models/{model_name}")
+
+            for variant in variations:
                 try:
-                    model = self.client.GenerativeModel(model_name)
-                    response = model.generate_content(prompt)
-                    if hasattr(response, 'text') and response.text:
-                        return response.text
+                    if self.sdk_type == "google-genai":
+                        response = self.client.models.generate_content(
+                            model=variant,
+                            contents=prompt
+                        )
+                        if hasattr(response, 'text') and response.text:
+                            return response.text
+                    elif self.sdk_type == "google-generativeai":
+                        model = self.client.GenerativeModel(variant)
+                        response = model.generate_content(prompt)
+                        if hasattr(response, 'text') and response.text:
+                            return response.text
                 except Exception as e:
-                    self.last_error = f"{model_name}: {e}"
+                    errors.append(f"{variant}: {e}")
                     continue
 
-        # Try google-genai
-        try:
-            from google import genai
-            client = genai.Client(api_key=self.api_key, http_options={'api_version': 'v1beta'})
-            for model_name in models_to_try:
-                try:
-                    response = client.models.generate_content(
-                        model=model_name,
-                        contents=prompt
-                    )
-                    if hasattr(response, 'text') and response.text:
-                        return response.text
-                except Exception as e:
-                    self.last_error = f"genai {model_name}: {e}"
-                    continue
-        except Exception as e:
-            self.last_error = f"genai init: {e}"
-
+        if errors:
+            self.last_error = errors[0]
         return ""
 
     def generate_sql(self, user_question: str) -> str:
@@ -82,7 +103,7 @@ class TextToSQLEngine:
         schema = self.db.get_schema()
 
         # If LLM client is available, use prompt engineering
-        if self.client:
+        if self.client and self.api_key:
             prompt = f"""You are Spacepilot, an expert aerospace database engineer.
 Convert the user's natural language question into a valid, optimized SQLite SQL query.
 
@@ -99,14 +120,14 @@ USER QUESTION:
 {user_question}
 """
             raw_output = self._generate_llm_response(prompt).strip()
-            # Clean markdown code blocks if any
-            clean_sql = re.sub(r"^```(sql)?\s*", "", raw_output, flags=re.IGNORECASE)
-            clean_sql = re.sub(r"\s*```$", "", clean_sql).strip()
-            return clean_sql
+            if raw_output:
+                clean_sql = re.sub(r"^```(sql)?\s*", "", raw_output, flags=re.IGNORECASE)
+                clean_sql = re.sub(r"\s*```$", "", clean_sql).strip()
+                return clean_sql
 
         # Built-in Heuristic Fallback for quick demonstration without API Key
         q_lower = user_question.lower()
-        if "battery" in q_lower and ("under" in q_lower or "below" in q_lower or "drop" in q_lower or "10" in q_lower or "12" in q_lower or "anomal" in q_lower):
+        if "battery" in q_lower and ("under" in q_lower or "below" in q_lower or "drop" in q_lower or "10" in q_lower or "12" in q_lower or "15" in q_lower or "anomal" in q_lower):
             return "SELECT t.timestamp, s.name, t.battery_voltage, t.battery_temp_c, t.subsystem_alert FROM telemetry t JOIN satellites s ON t.satellite_id = s.satellite_id WHERE t.battery_voltage < 15.0 ORDER BY t.timestamp DESC;"
         elif "military" in q_lower or "defense" in q_lower or "drdo" in q_lower or "air force" in q_lower:
             return "SELECT satellite_id, name, operator, mission_type, orbit_type, status FROM satellites WHERE operator LIKE '%Air Force%' OR operator LIKE '%DRDO%' OR mission_type LIKE '%Defense%' OR mission_type LIKE '%ELINT%';"
@@ -123,7 +144,7 @@ USER QUESTION:
 
     def self_correct_sql(self, original_question: str, broken_sql: str, error_message: str) -> str:
         """Automated Self-Correction: Feeds syntax or execution error back to LLM to auto-repair."""
-        if not self.client:
+        if not self.client or not self.api_key:
             return broken_sql
 
         schema = self.db.get_schema()
@@ -139,14 +160,16 @@ SQLITE ERROR: {error_message}
 Return ONLY the corrected raw SQL query. No markdown, no commentary.
 """
         raw_output = self._generate_llm_response(prompt).strip()
-        clean_sql = re.sub(r"^```(sql)?\s*", "", raw_output, flags=re.IGNORECASE)
-        clean_sql = re.sub(r"\s*```$", "", clean_sql).strip()
-        return clean_sql
+        if raw_output:
+            clean_sql = re.sub(r"^```(sql)?\s*", "", raw_output, flags=re.IGNORECASE)
+            clean_sql = re.sub(r"\s*```$", "", clean_sql).strip()
+            return clean_sql
+        return broken_sql
 
     def explain_results(self, user_question: str, sql_query: str, data_summary: str) -> str:
         """Generates a natural-language mission summary of query results."""
-        if not self.client:
-            return f"Query executed successfully against telemetry database. Found {data_summary.count('(') if isinstance(data_summary, str) else len(data_summary)} matching records."
+        if not self.client or not self.api_key:
+            return f"Query executed successfully against telemetry database. Found matching records."
 
         prompt = f"""You are Spacepilot, a space mission intelligence officer.
 Summarize the findings of this database query in 2-3 clear, executive bullet points.
@@ -157,4 +180,5 @@ QUERY RESULTS SUMMARY: {data_summary}
 
 Provide concise, tactical insights. If anomalies or critical telemetry alerts appear, highlight them clearly.
 """
-        return self._generate_llm_response(prompt).strip()
+        res = self._generate_llm_response(prompt).strip()
+        return res if res else f"Query executed successfully against telemetry database."
