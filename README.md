@@ -8,7 +8,8 @@
 [![License-MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Theme-Def--Space](https://img.shields.io/badge/Theme-Def--Space%20AI%202026-orange.svg)](#context--motivation)
 
-> 🚀 **Live Deployment URL:** **[https://spacepilot-isro.streamlit.app/](https://spacepilot-isro.streamlit.app/)**
+> 🚀 **Live Deployment URL:** **[https://spacepilot-isro.streamlit.app/](https://spacepilot-isro.streamlit.app/)**  
+> 📄 **Academic Project Report (PDF):** **[Spacepilot_Project_Report.pdf](Spacepilot_Project_Report.pdf)** (Includes Internship Certificate & Module Workings)
 
 **Spacepilot** is a unified Generative AI decision-support platform engineered for aerospace operations, defense earth observation, and satellite health monitoring. It bridges the gap between structured satellite telemetry databases and voluminous flight operating documentation.
 
