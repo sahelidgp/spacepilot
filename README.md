@@ -32,31 +32,84 @@ During space and defense operations, flight directors and ground station control
 
 ---
 
-## 🏛️ System Architecture
+## 🏛️ System Architecture & Workflow
 
-```
-                          [User Query / Plain English]
-                                       │
-            ┌──────────────────────────┼──────────────────────────┐
-            ▼                          ▼                          ▼
-  [Module 1: Text-to-SQL]   [Module 2: Anomaly Triage]   [Module 3: Mission RAG]
-            │                          │                          │
-   (Schema Linking &          (Z-Score & Threshold      (Document Ingestion,
-    Safe SQL Generation)       Deviation Engine)         Chunking & Search)
-            │                          │                          │
-            ▼                          ▼                          ▼
-   [Read-Only Validator]       [Live Telemetry Alert]     [Flight Manual SOPs]
-            │                          │                          │
-            ▼                          └────────────┬─────────────┘
-  [SQLite Telemetry DB]                             ▼
-  (7 Satellites / 1.1k pts)            [LLM Reasoning & Synthesis]
-            │                         (Gemini 1.5 Flash / Local LLM)
-            └──────────────────────────┬──────────────────────────┘
-                                       ▼
-                       [Interactive Streamlit Dashboard]
-                    - Executed SQL & Live Data Tables
-                    - Dynamic Plotly Telemetry Trend Lines
-                    - Ground-Station Action Sequences & SOP Citations
+```mermaid
+flowchart TD
+    classDef client fill:#1E1035,stroke:#C084FC,stroke-width:2px,color:#FAF5FF;
+    classDef module fill:#120726,stroke:#A855F7,stroke-width:2px,color:#E9D5FF;
+    classDef storage fill:#07020E,stroke:#38BDF8,stroke-width:2px,color:#BAE6FD;
+    classDef ai fill:#2E1065,stroke:#E879F9,stroke-width:2px,color:#FDF4FF;
+    classDef output fill:#0E051D,stroke:#34D399,stroke-width:2px,color:#D1FAE5;
+
+    User(["🧑‍🚀 Ground Station Operator / Flight Director"]):::client
+
+    subgraph Ingestion ["📥 Real-Time Multi-Modal Data Ingestion"]
+        CSVUpload["📤 Custom CSV Datasets (e.g. mission_launches.csv)"]:::storage
+        PDFUpload["📄 Custom PDF/TXT Manuals (e.g. UserGuide.pdf)"]:::storage
+        LiveStream["📡 Synthetic Satellite Telemetry Stream"]:::storage
+    end
+
+    subgraph CoreModules ["🛰️ Spacepilot Intelligent Engine"]
+        subgraph Mod1 ["Module 1: Text-to-SQL Engine"]
+            NLU["Natural Language Query Parser"]:::module
+            SQLGen["Read-Only SQL Generator + AST Validator"]:::module
+            SelfCorrect["Automated Self-Correction Loop"]:::module
+        end
+
+        subgraph Mod2 ["Module 2: Autonomous Anomaly Triage"]
+            Scanner["Continuous Telemetry Scanner (Voltage / Temp / Drift)"]:::module
+            AlertGen["Critical Metric Excursion Detector"]:::module
+            BriefingGen["Tactical Ground Command Synthesizer"]:::module
+        end
+
+        subgraph Mod3 ["Module 3: Mission Knowledge Assistant (RAG)"]
+            PyPDF["PyPDF Context-Inheriting Chunker"]:::module
+            DualMode{"Guardrail Mode Router"}:::module
+            StrictMode["🛡️ Strict Defense Mode\n(Zero Hallucination Guardrail)"]:::module
+            HybridMode["🌐 Hybrid Copilot Mode\n(Extended Space Science)"]:::module
+        end
+    end
+
+    subgraph KnowledgeBases ["🗄️ Knowledge & Storage Layer"]
+        SQLiteDB[("SQLite Database\n(satellites, telemetry, custom CSVs)")]:::storage
+        FlightManuals[("Mission Flight Manuals & SOPs\n(INSAT-3DR, EOS-04, SOPs, Uploads)")]:::storage
+    end
+
+    subgraph AICloud ["🧠 Generative AI Synthesis (Google Gemini Cloud)"]
+        GeminiLLM["Gemini 3.5 Flash / 1.5 Flash\n(Dynamic Fallback Engine)"]:::ai
+    end
+
+    subgraph UI ["🖥️ Cosmic Black & Violet Dashboard (Streamlit Cloud)"]
+        Tabs["Interactive Multi-Tab Operations Console"]:::output
+        Visuals["Dynamic Plotly Telemetry Time-Series & KPI Cards"]:::output
+        UplinkCommands["Ground-Station Emergency Command Sequences"]:::output
+    end
+
+    User -->|"Plain English Query / Uploads"| CoreModules
+    CSVUpload --> SQLiteDB
+    PDFUpload --> PyPDF
+    LiveStream --> SQLiteDB
+    
+    NLU --> SQLGen --> SQLiteDB
+    SQLGen -.->|"Syntax Error"| SelfCorrect --> GeminiLLM
+    
+    Scanner --> SQLiteDB
+    AlertGen --> Scanner
+    AlertGen --> BriefingGen
+    
+    PyPDF --> FlightManuals
+    DualMode --> StrictMode
+    DualMode --> HybridMode
+    FlightManuals --> DualMode
+    
+    BriefingGen --> GeminiLLM
+    StrictMode --> GeminiLLM
+    HybridMode --> GeminiLLM
+    SQLGen --> GeminiLLM
+    
+    GeminiLLM --> UI
+    SQLiteDB --> UI
 ```
 
 ---
@@ -145,14 +198,19 @@ Operators can upload new mission manuals (such as `UserGuide.pdf` or mission rep
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Comprehensive Tech Stack
 
-* **Language:** Python 3.10+
-* **Frontend:** Streamlit
-* **Database:** SQLite3 / Pandas
-* **Generative AI & LLMs:** Google Gemini 1.5 Flash API (`google-genai` / `google-generativeai`)
-* **Information Retrieval:** Custom Vector / Lexical Chunker & Retrieval Engine
-* **Data Visualization:** Plotly Express
+| Layer | Technologies & Libraries | Key Responsibilities in Spacepilot |
+| :--- | :--- | :--- |
+| **Core Runtime** | `Python 3.10+ / 3.12` | High-performance backend engine, type hints, asynchronous pipeline execution |
+| **Web Application & UI** | `Streamlit 1.35+` | Real-time multi-tab operations console with custom **Cosmic Black & Violet** dark theme (`#07020E`, `#120726`), CSS glow animations, and KPI metric cards |
+| **Foundation LLMs & GenAI** | `google-genai 0.1+`<br>`google-generativeai 0.7+` | Multi-model Google Gemini inference engine supporting `gemini-3.5-flash-lite`, `gemini-3.1-flash-lite`, `gemini-1.5-flash` with dynamic fallback and self-correction |
+| **Safe Database & Storage** | `SQLite3`<br>`sqlglot 23.0+` | Read-only telemetry database with AST query parsing, dynamic schema extraction, and strict injection guardrails (`DROP`, `DELETE`, `INSERT` prevention) |
+| **Data Ingestion & Analytics** | `pandas 2.2+` | Time-series telemetry wrangling, dynamic CSV dataset upload, schema normalization, and tabular rendering |
+| **Document Processing & RAG** | `pypdf 4.0+`<br>`re`, `math` | Multi-page PDF flight manual parsing, context-inheriting sub-section chunker, stop-word filtered TF-IDF lexical search, dual guardrail modes (*Strict* vs. *Hybrid*) |
+| **Data Visualization** | `Plotly Express 5.20+` | Interactive dark-themed telemetry graphs (battery voltage curves, thermal trends, gyro drift rates) |
+| **Config & Cloud Secrets** | `python-dotenv 1.0+`<br>`st.secrets` | Seamless secret handling across local development (`.env`) and cloud production (Streamlit Community Cloud Secrets) |
+| **Cloud Deployment** | `Streamlit Community Cloud` | Globally accessible, zero-latency public hosting at `https://spacepilot-isro.streamlit.app/` |
 
 ---
 
