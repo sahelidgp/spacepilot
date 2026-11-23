@@ -318,6 +318,36 @@ with tab1:
     st.markdown("### 💬 Natural Language Telemetry Query Engine")
     st.caption("Translate operational questions about orbital parameters, voltage levels, or subsystem health into executed SQL.")
 
+    # Dynamic CSV Dataset Upload Section
+    with st.expander("📤 Upload Custom CSV Dataset (Satellite / Telemetry Records)", expanded=False):
+        st.caption("Upload any CSV file to automatically create a new database table and query it in natural language.")
+        up_csv_col1, up_csv_col2 = st.columns([4, 1])
+        with up_csv_col1:
+            uploaded_csv = st.file_uploader(
+                "Choose a CSV file",
+                type=["csv"],
+                help="Upload any structured telemetry or satellite CSV dataset",
+                label_visibility="collapsed"
+            )
+        with up_csv_col2:
+            if uploaded_csv is not None:
+                if st.button("📥 Import CSV Table", type="secondary", use_container_width=True):
+                    with st.spinner(f"Ingesting {uploaded_csv.name} into SQLite..."):
+                        tbl_name = uploaded_csv.name.lower().replace(".csv", "")
+                        success, msg = db.import_csv_as_table(tbl_name, uploaded_csv.getvalue())
+                        if success:
+                            st.success(msg)
+                            st.rerun()
+                        else:
+                            st.error(f"Import failed: {msg}")
+
+        # Active tables badge list
+        tables_summary = db.get_tables_summary()
+        if tables_summary:
+            st.markdown("**Active Queryable Database Tables:**")
+            badges = " &nbsp;|&nbsp; ".join([f"`🗄️ {t['table']} ({t['row_count']:,} rows)`" for t in tables_summary])
+            st.markdown(badges)
+
     default_prompt = "" if quick_query == "Custom Query" else quick_query
     
     col_input, col_action = st.columns([5, 1])

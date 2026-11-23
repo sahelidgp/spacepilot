@@ -81,3 +81,49 @@ class DatabaseManager:
         except Exception as e:
             return None, str(e), []
 
+    def import_csv_as_table(self, table_name: str, csv_bytes: bytes) -> tuple[bool, str]:
+        """Loads uploaded CSV data into SQLite database as a new table."""
+        try:
+            import io
+            if not HAS_PANDAS:
+                return False, "Pandas is required for CSV ingestion."
+            
+            # Sanitize table name (only letters, numbers, underscores)
+            clean_name = re.sub(r"[^a-zA-Z0-9_]", "_", table_name.lower().replace(".csv", "")).strip("_")
+            if not clean_name:
+                clean_name = "custom_telemetry"
+
+            # Parse CSV
+            df = pd.read_csv(io.BytesIO(csv_bytes))
+            
+            if df.empty:
+                return False, "The uploaded CSV file is empty."
+
+            # Clean column names (strip whitespace, replace spaces with underscores)
+            df.columns = [re.sub(r"[^a-zA-Z0-9_]", "_", str(col).strip()).strip("_") for col in df.columns]
+
+            conn = self.get_connection()
+            df.to_sql(clean_name, conn, if_exists="replace", index=False)
+            conn.close()
+
+            return True, f"Successfully imported table '{clean_name}' with {len(df)} rows and {len(df.columns)} columns."
+        except Exception as e:
+            return False, str(e)
+
+    def get_tables_summary(self) -> list[dict]:
+        """Returns all tables and their row counts."""
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
+            tables = [r[0] for r in cursor.fetchall()]
+            summary = []
+            for t in tables:
+                cursor.execute(f"SELECT COUNT(*) FROM {t};")
+                count = cursor.fetchone()[0]
+                summary.append({"table": t, "row_count": count})
+            conn.close()
+            return summary
+        except Exception:
+            return []
+
