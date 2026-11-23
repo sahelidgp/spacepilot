@@ -15,7 +15,7 @@ class RAGEngine:
         self._load_and_chunk_documents()
 
     def _load_and_chunk_documents(self):
-        """Loads all text and markdown files in the documents directory and splits into chunks."""
+        """Loads all text and markdown files in the documents directory and splits into contextual chunks."""
         self.chunks = []
         if not os.path.exists(self.docs_dir):
             return
@@ -27,28 +27,31 @@ class RAGEngine:
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
                 
+                # Extract first non-empty header line as document title
+                first_line = next((line.strip().replace("#", "").strip() for line in content.splitlines() if line.strip()), filename)
+                
                 # Split by sections or double newlines
-                raw_sections = [s.strip() for s in content.split("\n\n") if len(s.strip()) > 40]
+                raw_sections = [s.strip() for s in content.split("\n\n") if len(s.strip()) > 30]
                 for idx, section in enumerate(raw_sections):
+                    # Prepend document title to every chunk for context inheritance
+                    chunk_text = f"Document: {first_line} ({filename})\n\n{section}"
                     self.chunks.append({
                         "id": f"{filename}_{idx}",
                         "source": filename,
-                        "content": section
+                        "content": chunk_text
                     })
             except Exception as e:
                 print(f"Error loading {file_path}: {e}")
 
-    def search(self, query: str, top_k: int = 3) -> list[dict]:
+    def search(self, query: str, top_k: int = 5) -> list[dict]:
         """Performs lexical and keyword-relevance matching across document chunks."""
         if not self.chunks:
             return []
 
-        # Filter out common stop words to avoid false positive matches on words like 'what', 'is'
-        stop_words = {"what", "is", "are", "the", "a", "an", "of", "in", "to", "for", "and", "about", "how", "tell", "me"}
+        stop_words = {"what", "is", "are", "the", "a", "an", "of", "in", "to", "for", "and", "about", "how", "tell", "me", "does"}
         raw_tokens = set(re.findall(r"\w+", query.lower()))
         query_tokens = raw_tokens - stop_words
         
-        # If user only typed stop words, return empty
         if not query_tokens:
             return []
 
@@ -57,12 +60,11 @@ class RAGEngine:
             chunk_tokens = re.findall(r"\w+", chunk["content"].lower())
             chunk_token_set = set(chunk_tokens)
             
-            # Simple TF-IDF inspired score
+            # Match score with token frequency
             matches = query_tokens.intersection(chunk_token_set)
             score = 0.0
             for term in matches:
-                # Frequency in chunk
-                tf = chunk_tokens.count(term) / (len(chunk_tokens) + 1)
+                tf = chunk_tokens.count(term)
                 score += tf * (1.0 + math.log(len(self.chunks) / (1 + sum(1 for c in self.chunks if term in c["content"].lower()))))
 
             if score > 0:
