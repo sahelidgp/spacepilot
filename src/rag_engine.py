@@ -97,6 +97,12 @@ USER QUESTION:
 {user_question}
 """
             answer = llm_engine._generate_llm_response(prompt).strip()
+            if not answer:
+                if retrieved_docs:
+                    top_hit = retrieved_docs[0]
+                    answer = f"**From {top_hit['source']}:**\n\n{top_hit['content']}"
+                else:
+                    answer = "The available flight manuals do not contain information regarding this topic."
         else:
             # Fallback answer synthesis
             if retrieved_docs:

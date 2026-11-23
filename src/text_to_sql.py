@@ -17,33 +17,49 @@ class TextToSQLEngine:
         try:
             # Check for new google-genai SDK
             from google import genai
-            self.client = genai.Client(api_key=self.api_key)
+            self.client = genai.Client(api_key=self.api_key, http_options={'api_version': 'v1beta'})
             self.sdk_type = "google-genai"
         except ImportError:
             try:
                 # Check for legacy google-generativeai SDK
                 import google.generativeai as genai_legacy
                 genai_legacy.configure(api_key=self.api_key)
-                self.client = genai_legacy.GenerativeModel("gemini-1.5-flash")
+                self.client = genai_legacy
                 self.sdk_type = "google-generativeai"
             except ImportError:
                 self.client = None
                 self.sdk_type = None
 
     def _generate_llm_response(self, prompt: str) -> str:
-        """Helper to invoke LLM with current client."""
+        """Helper to invoke LLM with resilient multi-model fallback."""
         if not self.client:
             return ""
 
+        # Models to attempt in order of speed, capability, and availability
+        models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+
         if self.sdk_type == "google-genai":
-            response = self.client.models.generate_content(
-                model="gemini-1.5-flash",
-                contents=prompt
-            )
-            return response.text
+            for model_name in models_to_try:
+                try:
+                    response = self.client.models.generate_content(
+                        model=model_name,
+                        contents=prompt
+                    )
+                    if hasattr(response, 'text') and response.text:
+                        return response.text
+                except Exception:
+                    continue
+
         elif self.sdk_type == "google-generativeai":
-            response = self.client.generate_content(prompt)
-            return response.text
+            for model_name in models_to_try:
+                try:
+                    model = self.client.GenerativeModel(model_name)
+                    response = model.generate_content(prompt)
+                    if hasattr(response, 'text') and response.text:
+                        return response.text
+                except Exception:
+                    continue
+
         return ""
 
     def generate_sql(self, user_question: str) -> str:
