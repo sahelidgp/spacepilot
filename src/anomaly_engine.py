@@ -23,7 +23,11 @@ class AnomalyEngine:
         LIMIT 25;
         """
         rows, err, cols = self.db.execute_query(query)
-        if err or not rows:
+        if err or rows is None:
+            return []
+        if hasattr(rows, 'empty') and rows.empty:
+            return []
+        if isinstance(rows, list) and not rows:
             return []
 
         anomalies = []
