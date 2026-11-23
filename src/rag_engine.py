@@ -43,6 +43,40 @@ class RAGEngine:
             except Exception as e:
                 print(f"Error loading {file_path}: {e}")
 
+    def ingest_uploaded_file(self, filename: str, file_bytes: bytes) -> tuple[bool, str]:
+        """Ingests an uploaded PDF, TXT, or MD file and dynamically updates the knowledge base."""
+        try:
+            os.makedirs(self.docs_dir, exist_ok=True)
+            content = ""
+            
+            if filename.lower().endswith(".pdf"):
+                import io
+                import pypdf
+                reader = pypdf.PdfReader(io.BytesIO(file_bytes))
+                pages_text = []
+                for p_idx, page in enumerate(reader.pages):
+                    t = page.extract_text()
+                    if t and t.strip():
+                        pages_text.append(f"--- Page {p_idx+1} ---\n{t.strip()}")
+                content = "\n\n".join(pages_text)
+                target_filename = f"{os.path.splitext(filename)[0]}_extracted.txt"
+            else:
+                content = file_bytes.decode("utf-8", errors="ignore")
+                target_filename = filename
+
+            if not content.strip():
+                return False, "Uploaded file appears to be empty or unreadable."
+
+            save_path = os.path.join(self.docs_dir, target_filename)
+            with open(save_path, "w", encoding="utf-8") as f:
+                f.write(content)
+
+            # Reload knowledge chunks immediately
+            self._load_and_chunk_documents()
+            return True, f"Successfully indexed '{filename}' ({len(self.chunks)} total knowledge chunks available)."
+        except Exception as e:
+            return False, str(e)
+
     def search(self, query: str, top_k: int = 5) -> list[dict]:
         """Performs lexical and keyword-relevance matching across document chunks."""
         if not self.chunks:

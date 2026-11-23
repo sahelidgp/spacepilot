@@ -425,6 +425,33 @@ with tab3:
     else:
         st.caption("🌐 **Hybrid Copilot Mode:** Cites flight manuals when available; seamlessly explains general astronomy/space science when manuals don't contain it.")
 
+    # Dynamic Document Upload Section
+    with st.expander("📤 Upload Custom Spacecraft Manuals or Research Papers (PDF / TXT)", expanded=False):
+        st.caption("Upload your own ISRO/NASA mission reports, satellite telemetry specs, or research whitepapers to dynamically expand Spacepilot's knowledge base.")
+        up_col1, up_col2 = st.columns([4, 1])
+        with up_col1:
+            uploaded_file = st.file_uploader(
+                "Choose a PDF or TXT document",
+                type=["pdf", "txt", "md"],
+                label_visibility="collapsed"
+            )
+        with up_col2:
+            if uploaded_file is not None:
+                if st.button("📥 Index File", type="secondary", use_container_width=True):
+                    with st.spinner(f"Extracting and indexing text from {uploaded_file.name}..."):
+                        success, msg = rag.ingest_uploaded_file(uploaded_file.name, uploaded_file.getvalue())
+                        if success:
+                            st.success(msg)
+                            st.rerun()
+                        else:
+                            st.error(f"Ingestion failed: {msg}")
+
+        # Show list of active indexed documents
+        current_docs = sorted(list(set(c["source"] for c in rag.chunks)))
+        st.markdown("**Indexed Knowledge Base Documents:**")
+        doc_badges = " &nbsp;|&nbsp; ".join([f"`📄 {d}`" for d in current_docs])
+        st.markdown(doc_badges)
+
     rag_col, rag_btn = st.columns([5, 1])
     with rag_col:
         rag_question = st.text_input(
