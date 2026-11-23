@@ -71,8 +71,8 @@ class RAGEngine:
         scored_chunks.sort(key=lambda x: x[0], reverse=True)
         return [chunk for score, chunk in scored_chunks[:top_k]]
 
-    def answer_question(self, user_question: str, llm_engine=None) -> dict:
-        """Retrieves relevant context and generates a grounded, cited answer."""
+    def answer_question(self, user_question: str, llm_engine=None, mode: str = "hybrid") -> dict:
+        """Retrieves relevant context and generates a grounded, cited answer in either Strict or Hybrid mode."""
         retrieved_docs = self.search(user_question, top_k=3)
         if not retrieved_docs:
             context = "No specific flight documents matched this query."
@@ -82,7 +82,23 @@ class RAGEngine:
             citations = list(set([doc['source'] for doc in retrieved_docs]))
 
         if llm_engine and getattr(llm_engine, 'client', None):
-            prompt = f"""You are Spacepilot, an intelligent Space Mission Knowledge Copilot.
+            if mode == "strict":
+                prompt = f"""You are Spacepilot, an intelligent Space Mission Knowledge Copilot operating in STRICT DEFENSE GROUNDING MODE.
+Answer the user's question using ONLY the provided mission documentation.
+
+GROUND RULES:
+1. Always ground your answer strictly in the provided context.
+2. Explicitly cite the document source (e.g. [Document-Name.txt]).
+3. If the context does not contain the answer, truthfully say: "The available flight manuals do not contain information regarding this topic." Never hallucinate technical specs.
+
+CONTEXT:
+{context}
+
+USER QUESTION:
+{user_question}
+"""
+            else:
+                prompt = f"""You are Spacepilot, an intelligent Space Mission Knowledge Copilot operating in HYBRID INTELLIGENCE MODE.
 Answer the user's question with high technical accuracy.
 
 GROUND RULES (HYBRID INTELLIGENCE MODE):

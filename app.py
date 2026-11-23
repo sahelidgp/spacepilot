@@ -402,8 +402,23 @@ with tab2:
 # TAB 3: MISSION KNOWLEDGE ASSISTANT (RAG)
 # -------------------------------------------------------------
 with tab3:
-    st.markdown("### 📚 Space Mission Flight Manuals & SOP Knowledge Base")
-    st.caption("Ask technical questions regarding spacecraft subsystem limits, battery charging cycles, and emergency load-shedding procedures.")
+    col_t3_title, col_t3_mode = st.columns([3, 2])
+    with col_t3_title:
+        st.markdown("### 📚 Space Mission Flight Manuals & SOP Knowledge Base")
+    with col_t3_mode:
+        selected_mode_label = st.radio(
+            "Guardrail Mode",
+            ["🌐 Hybrid Copilot Mode", "🛡️ Strict Defense Mode"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
+    
+    rag_mode = "strict" if "Strict" in selected_mode_label else "hybrid"
+    
+    if rag_mode == "strict":
+        st.caption("🛡️ **Strict Defense Mode:** Answers strictly from verified uploaded spacecraft manuals with citations. Rejects off-topic queries to prevent hallucination.")
+    else:
+        st.caption("🌐 **Hybrid Copilot Mode:** Cites flight manuals when available; seamlessly explains general astronomy/space science when manuals don't contain it.")
 
     rag_col, rag_btn = st.columns([5, 1])
     with rag_col:
@@ -418,10 +433,10 @@ with tab3:
     if search_rag and rag_question:
         with st.spinner("Searching embedded space flight manuals and extracting citations..."):
             try:
-                rag_result = rag.answer_question(rag_question, llm_engine=sql_engine)
+                rag_result = rag.answer_question(rag_question, llm_engine=sql_engine, mode=rag_mode)
             except Exception as e:
                 st.warning(f"Note: Cloud LLM response encountered an issue ({e}). Serving offline manual search.")
-                rag_result = rag.answer_question(rag_question, llm_engine=None)
+                rag_result = rag.answer_question(rag_question, llm_engine=None, mode=rag_mode)
             
             st.markdown("##### 🤖 Mission Knowledge Synthesis")
             st.markdown(f"""
