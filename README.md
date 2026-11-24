@@ -362,6 +362,7 @@ spacepilot/
 * **Academic Submission:** Submitted for evaluation towards **7th Semester Internship / Industrial Training Credits**
 * **Host Institution & Program:** **Bharat Space Education Research Centre (BSERC)**  
   *Def-Space Artificial Intelligence Internship 2026* (Certificate ID: `BSERC-2026-AI-1035`)  
+  *Internship Period:* May 20, 2026 – June 25, 2026  
   Theme: *"Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership"*
 * **Institutional Clarification:** This project was developed as part of the Def-Space AI Internship conducted independently under BSERC. It is submitted to the faculty of the Department of Computer Science & Engineering at NIT Durgapur for academic training credit assessment.
 

@@ -1,7 +1,6 @@
 import os
 import sys
 import re
-from PIL import Image as PILImage
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
@@ -73,7 +72,6 @@ def build_pdf_story():
     C_LIGHT = colors.HexColor("#F9FAFB")
     C_BORDER = colors.HexColor("#000000")
     
-    # Styles matching reference document
     cover_main_title = ParagraphStyle(
         'CoverMainTitle', parent=styles['Normal'],
         fontName='Helvetica-Bold', fontSize=22, leading=26,
@@ -130,31 +128,25 @@ def build_pdf_story():
     
     body_style = ParagraphStyle(
         'Body_Ref', parent=styles['Normal'],
-        fontName='Helvetica', fontSize=9, leading=12.8,
+        fontName='Helvetica', fontSize=9, leading=13.0,
         textColor=C_BLACK, spaceAfter=3.5, alignment=4
     )
     
     bullet_style = ParagraphStyle(
         'Bullet_Ref', parent=styles['Normal'],
-        fontName='Helvetica', fontSize=9, leading=12.8,
+        fontName='Helvetica', fontSize=9, leading=13.0,
         textColor=C_BLACK, leftIndent=12, spaceAfter=2.5
-    )
-    
-    caption_style = ParagraphStyle(
-        'Caption_Ref', parent=styles['Normal'],
-        fontName='Helvetica-Oblique', fontSize=8, leading=10,
-        textColor=C_GRAY, alignment=1, spaceAfter=4
     )
     
     toc_item_style = ParagraphStyle(
         'TOC_Item', parent=styles['Normal'],
-        fontName='Helvetica', fontSize=9.5, leading=17,
+        fontName='Helvetica', fontSize=9.5, leading=16.5,
         textColor=C_BLACK
     )
     
     toc_sub_item_style = ParagraphStyle(
         'TOC_SubItem', parent=styles['Normal'],
-        fontName='Helvetica', fontSize=9.5, leading=17,
+        fontName='Helvetica', fontSize=9.5, leading=16.5,
         textColor=C_BLACK, leftIndent=15
     )
     
@@ -201,7 +193,7 @@ def build_pdf_story():
     meta_data = [
         [P("Institution", meta_key_style), P("National Institute of Technology Durgapur", meta_val_style)],
         [P("Academic Dept.", meta_key_style), P("Computer Science and Engineering", meta_val_style)],
-        [P("Internship Period", meta_key_style), P("Def-Space AI 2026 (Certificate ID: BSERC-2026-AI-1035)", meta_val_style)],
+        [P("Internship Period", meta_key_style), P("May 20, 2026 – June 25, 2026", meta_val_style)],
         [P("Location", meta_key_style), P("Bharat Space Education Research Centre, Bengaluru (Virtual Operations)", meta_val_style)],
         [P("Department", meta_key_style), P("Aerospace Artificial Intelligence &amp; Satellite Operations", meta_val_style)],
         [P("Academic Evaluation", meta_key_style), P("B.Tech 7th Semester Internship / Industrial Training Credits", meta_val_style)],
@@ -234,7 +226,7 @@ def build_pdf_story():
         story.append(Image(cert_img_path, width=7.0*inch, height=4.94*inch))
     
     story.append(Spacer(1, 8))
-    story.append(P("<b>Official Verification:</b> Awarded to <b>Saheli Mahanty</b> in recognition of successful completion of the 15-day <i>Def-Space Artificial Intelligence Internship 2026</i> conducted by the Bharat Space Education Research Centre (BSERC) under the theme <i>'Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership'</i>. Submitted to the Department of Computer Science &amp; Engineering, National Institute of Technology Durgapur, towards 7th Semester Internship / Industrial Training academic credit assessment.", body_style))
+    story.append(P("<b>Official Verification:</b> Awarded to <b>Saheli Mahanty</b> in recognition of successful completion of the <i>Def-Space Artificial Intelligence Internship 2026</i> undertaken from <b>May 20, 2026 to June 25, 2026</b>, conducted by the Bharat Space Education Research Centre (BSERC) under the theme <i>'Towards Viksit Bharat: Innovating, Collaborating and Aspiring to Global Space Leadership'</i>. Submitted to the Department of Computer Science &amp; Engineering, National Institute of Technology Durgapur, towards 7th Semester Internship / Industrial Training academic credit assessment.", body_style))
     
     story.append(PageBreak())
 
@@ -256,7 +248,7 @@ def build_pdf_story():
     story.append(P("4.2 Natural Language-to-SQL Telemetry Query Engine (NL2SQL) (Sole Developer)", toc_sub_item_style))
     story.append(P("4.3 Autonomous Anomaly Detection &amp; Grounded Emergency Triage (Sole Developer)", toc_sub_item_style))
     story.append(P("4.4 Mission Knowledge Assistant (RAG Engine) (Sole Developer)", toc_sub_item_style))
-    story.append(P("4.5 Strict Defense Mode Verification &amp; Operations Console (Sole Developer)", toc_sub_item_style))
+    story.append(P("4.5 Full Constellation Operations Console &amp; Cloud Deployment (Sole Developer)", toc_sub_item_style))
     story.append(P("5. Technical Skills Developed", toc_item_style))
     story.append(P("6. Key Learnings &amp; Professional Growth", toc_item_style))
     story.append(P("6.1 Aerospace Telemetry Engineering &amp; Systems Complexity", toc_sub_item_style))
@@ -274,7 +266,7 @@ def build_pdf_story():
     # =========================================================================
     story.append(P("1. Executive Summary", h1_style))
     story.append(P(
-        "This report documents my internship under the <i>Def-Space Artificial Intelligence Programme 2026</i>, hosted by the <b>Bharat Space Education Research Centre (BSERC)</b>, undertaken to satisfy academic requirements for 7th Semester Internship / Industrial Training credits at the <b>National Institute of Technology Durgapur</b>.",
+        "This report documents my summer internship under the <i>Def-Space Artificial Intelligence Programme 2026</i>, hosted by the <b>Bharat Space Education Research Centre (BSERC)</b>, undertaken from <b>20 May 2026 to 25 June 2026</b>, to satisfy academic requirements for 7th Semester Internship / Industrial Training credits at the <b>National Institute of Technology Durgapur</b>.",
         body_style
     ))
     story.append(P(
@@ -298,7 +290,7 @@ def build_pdf_story():
         [P("<b>Organisation</b>", meta_key_style), P("Bharat Space Education Research Centre (BSERC)", meta_val_style)],
         [P("<b>Location</b>", meta_key_style), P("Bharat Space Education Research Centre, Bengaluru (Virtual Command Operations)", meta_val_style)],
         [P("<b>Department</b>", meta_key_style), P("Aerospace Artificial Intelligence &amp; Satellite Operations", meta_val_style)],
-        [P("<b>Duration</b>", meta_key_style), P("15-Day Intensive Def-Space AI Programme 2026 (Certificate ID: BSERC-2026-AI-1035)", meta_val_style)],
+        [P("<b>Duration</b>", meta_key_style), P("May 20, 2026 – June 25, 2026 (approximately 5 weeks)", meta_val_style)],
         [P("<b>Domain</b>", meta_key_style), P("Space Mission Operations, Telemetry Diagnostics &amp; Defense AI", meta_val_style)],
         [P("<b>Technology Area</b>", meta_key_style), P("Python, Google Gemini Cloud AI, SQLGlot, SQLite, IsolationForest, Dense Vector Embeddings, Streamlit Cloud", meta_val_style)],
     ]
@@ -360,12 +352,12 @@ def build_pdf_story():
         body_style
     ))
     
-    flow_img_path = os.path.join(ASSETS_DIR, "system_flowchart.png")
-    if os.path.exists(flow_img_path):
-        story.append(Spacer(1, 2))
-        story.append(Image(flow_img_path, width=7.0*inch, height=3.6*inch))
-        story.append(P("Figure 1: Spacepilot End-to-End System Architecture and Multi-Modal Data Flow Pipeline.", caption_style))
-        
+    story.append(P("<b>Key Architectural Contributions:</b>", h3_style))
+    story.append(P("• <b>Decoupled Multi-Modal Ingestion:</b> Architected an ingestion pipeline supporting continuous telemetry streaming (1,176 data points across 7 orbital assets), dynamic tabular CSV ingestion, and multi-page technical document chunking via <code>pypdf</code>.", bullet_style))
+    story.append(P("• <b>Dual Knowledge Layering:</b> Separated time-series sensor databases (SQLite) from unstructured mission flight manuals (TXT/PDF corpora), ensuring clear boundaries between deterministic numeric metrics and semantic retrieval.", bullet_style))
+    story.append(P("• <b>Dynamic Multi-Model Inference:</b> Integrated a resilient LLM client supporting Google Gemini 2.5 Flash and 1.5 Flash with automated fallback, ensuring uninterrupted operation during API quota limits.", bullet_style))
+    story.append(P("• <b>Deterministic Offline Fallback Engine:</b> Implemented offline heuristic handlers across all three modules, enabling mission control operations to proceed seamlessly even when external cloud connectivity is severed.", bullet_style))
+    
     story.append(P("<b>Impact:</b> Unifies multi-satellite sensor monitoring, ad-hoc database querying, and flight procedure lookups into a single cohesive interface, eliminating cross-platform hopping during time-critical orbital passes.", body_style))
 
     story.append(PageBreak())
@@ -386,12 +378,8 @@ def build_pdf_story():
     story.append(P("• <b>Engine-Level Read-Only Sandboxing:</b> Configures database connections with <code>PRAGMA query_only = ON;</code>, making it physically impossible for destructive writes to execute at the SQLite engine level.", bullet_style))
     story.append(P("• <b>Automated Self-Correction Loop:</b> When query execution raises an SQLite exception, the runtime error traceback is reflected back to Gemini to automatically regenerate and execute a corrected query, tracking the active executed query in the final summary.", bullet_style))
     story.append(P("• <b>Dynamic CSV Dataset Ingestion:</b> Supports uploading arbitrary mission CSV datasets (e.g. <code>mission_launches.csv</code> containing 4,324 space mission records). Column names are sanitized, a dedicated SQLite table is registered dynamically, and the schema is immediately queryable in plain English.", bullet_style))
-
-    csv_img_path = os.path.join(ASSETS_DIR, "01_nl2sql_custom_csv_execution.jpg")
-    if os.path.exists(csv_img_path):
-        story.append(Spacer(1, 2))
-        story.append(Image(csv_img_path, width=7.0*inch, height=3.1*inch))
-        story.append(P("Figure 2: Natural Language to SQL query on uploaded mission_launches.csv dataset displaying SpaceX launch records.", caption_style))
+    story.append(P("• <b>Schema-Linked Query Generation:</b> Dynamically inspects table schemas at runtime and injects exact column definitions and types into the Gemini system prompt, minimizing invalid column references.", bullet_style))
+    story.append(P("• <b>Natural Language Result Summarization:</b> Generates concise operational briefings translating tabular query results into domain-relevant flight insights for telemetry engineers.", bullet_style))
 
     story.append(P("<b>Impact:</b> Enables sub-second querying across complex telemetry and custom aerospace datasets with complete mathematical immunity against destructive SQL injection or accidental data mutation.", body_style))
 
@@ -413,17 +401,8 @@ def build_pdf_story():
     story.append(P("• <b>Unsupervised ML Anomaly Detection (IsolationForest):</b> Implements Scikit-Learn's <code>IsolationForest(n_estimators=100, contamination=0.03)</code> fitted across 5 continuous telemetry dimensions (<code>battery_voltage</code>, <code>battery_temp_c</code>, <code>solar_panel_current</code>, <code>gyro_drift_rate</code>, <code>signal_strength_dbm</code>), flagging multivariate statistical outliers that single-metric thresholds miss.", bullet_style))
     story.append(P("• <b>Grounded SOP Command Traceability:</b> Automatically retrieves contingency procedures from verified mission documentation (<code>satellite_anomaly_triage_sop.txt</code>, <code>eos04_radar_reconnaissance_specs.txt</code>). Every ground uplink command is strictly mapped to documented procedures; undocumented conditions return an explicit <code>INSUFFICIENT_DOCUMENTED_EVIDENCE</code> notification to prevent speculative commands.", bullet_style))
     story.append(P("• <b>Structured Emergency Briefing:</b> Generates a 3-part tactical briefing: (1) Critical Assessment (severity and sensor deltas), (2) Probable Root Cause (hardware diagnostics), and (3) Step-by-Step Command Sequence (payload load-shedding, bus switching).", bullet_style))
-
-    anom_img1 = os.path.join(ASSETS_DIR, "02_anomaly_triage_alert_metrics.jpg")
-    anom_img2 = os.path.join(ASSETS_DIR, "03_anomaly_triage_ground_command_sop.jpg")
-    if os.path.exists(anom_img1):
-        story.append(Spacer(1, 1))
-        story.append(Image(anom_img1, width=7.0*inch, height=2.0*inch))
-        story.append(P("Figure 3: Anomaly alert dashboard displaying critical undervoltage and thermal readings for EOS-04.", caption_style))
-    if os.path.exists(anom_img2):
-        story.append(Spacer(1, 1))
-        story.append(Image(anom_img2, width=7.0*inch, height=2.0*inch))
-        story.append(P("Figure 4: Ground station action sequence generated by cross-referencing telemetry with SOP flight manuals.", caption_style))
+    story.append(P("• <b>Multi-Satellite Constellation Scanning:</b> Evaluates 7 operational assets simultaneously (INSAT-3DR, Cartosat-3, GSAT-29, EOS-04, EMISAT, GSAT-7A, Chandrayaan-3 Propulsion), flagging active alerts across 1,176 sensor records.", bullet_style))
+    story.append(P("• <b>Dynamic Anomaly Scoring:</b> Computes standardized anomaly decision scores, ranking alerts by operational severity to prioritize flight director attention.", bullet_style))
 
     story.append(P("<b>Impact:</b> Constellation-wide health monitoring (25 alerts flagged across 7 satellite nodes) with automated, verified recovery command sequences.", body_style))
 
@@ -461,49 +440,34 @@ def build_pdf_story():
     ]))
     story.append(t_mode)
 
-    rag_img1 = os.path.join(ASSETS_DIR, "04_rag_hybrid_mode_general_science.jpg")
-    if os.path.exists(rag_img1):
-        story.append(Spacer(1, 2))
-        story.append(Image(rag_img1, width=7.0*inch, height=2.2*inch))
-        story.append(P("Figure 5: Hybrid Copilot Mode answering 'what is asteroid' with scientific explanation and contextual disclosure note.", caption_style))
+    story.append(Spacer(1, 4))
+    story.append(P("• <b>Programmatic Zero-Hallucination Gate:</b> In Strict Defense Mode, questions with similarity scores below 0.28 are intercepted and rejected before LLM invocation, mathematically eliminating hallucinations for off-domain queries without consuming API tokens.", bullet_style))
+    story.append(P("• <b>Multi-Format Document Parsing:</b> Dynamically parses PDF handbooks and text manuals using <code>pypdf</code>, maintaining document section hierarchy in indexed chunks.", bullet_style))
 
     story.append(P("<b>Impact:</b> Eliminates hallucinations during flight-critical queries while retaining broad conversational utility for general operator training.", body_style))
 
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGE 10: 4.5 STRICT DEFENSE MODE VERIFICATION & CONSOLE (Ref page 9)
+    # PAGE 10: 4.5 OPERATIONS CONSOLE & CLOUD DEPLOYMENT (Ref page 9)
     # =========================================================================
-    story.append(P("4.5 Strict Defense Mode Verification &amp; Operations Console", h2_style))
-    story.append(P("<b>My Role:</b> Sole Developer — Designed validation test protocols and implemented the unified Streamlit operations dashboard console.", body_style))
+    story.append(P("4.5 Full Constellation Operations Console &amp; Cloud Deployment", h2_style))
+    story.append(P("<b>My Role:</b> Sole Developer — Built the complete web application interface, reactive telemetry visualizations, cloud deployment pipeline, and security configurations.", body_style))
     
     story.append(P(
-        "<b>Verification Scenarios:</b> Strict Defense Mode was validated against two high-stakes operational scenarios: (1) <b>Anti-Hallucination Rejection:</b> submitting an out-of-domain query (<i>'what is asteroid'</i>) triggers a programmatic similarity cutoff (&lt; 0.28) that rejects the prompt before calling the LLM (Figure 6); and (2) <b>Dynamic Document Ingestion:</b> uploading <code>UserGuide.pdf</code> via <code>pypdf</code> and asking <i>'Describe Airspeed limitations'</i> correctly extracts takeoff and re-entry velocity limits with verbatim file citations (Figure 7).",
+        "<b>Overview:</b> To provide ground station operators with an actionable, low-latency control interface, Spacepilot was deployed publicly as a reactive Single Page Application (SPA) on Streamlit Community Cloud. The interface bridges all three AI engines into an integrated command console.",
         body_style
     ))
     
-    rag_img2 = os.path.join(ASSETS_DIR, "05_rag_strict_mode_antihallucination.jpg")
-    rag_img3 = os.path.join(ASSETS_DIR, "06_rag_strict_mode_pdf_citations.jpg")
-    dash_img_path = os.path.join(ASSETS_DIR, "spacepilot_dashboard.png")
-    
-    side_images = [
-        [Image(rag_img2, width=3.45*inch, height=1.9*inch), Image(rag_img3, width=3.45*inch, height=1.9*inch)],
-        [P("Figure 6: Strict Mode Anti-Hallucination Rejection.", caption_style), P("Figure 7: Strict Mode PDF Citations (UserGuide.pdf).", caption_style)]
-    ]
-    t_side = Table(side_images, colWidths=[3.5*inch, 3.5*inch])
-    t_side.setStyle(TableStyle([
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('PADDING', (0,0), (-1,-1), 1),
-        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-    ]))
-    story.append(t_side)
-    
-    story.append(Spacer(1, 2))
-    if os.path.exists(dash_img_path):
-        story.append(Image(dash_img_path, width=7.0*inch, height=2.6*inch))
-        story.append(P("Figure 8: Spacepilot Web Application Dashboard Overview running live on Streamlit Cloud.", caption_style))
+    story.append(P("<b>Key Engineering Contributions:</b>", h3_style))
+    story.append(P("• <b>Cosmic Theme Design:</b> Implemented a specialized aerospace operations theme featuring custom CSS styling, dark backgrounds, high-contrast typography, and color-coded status badges for instant anomaly recognition.", bullet_style))
+    story.append(P("• <b>Interactive Multi-Tab Workflow:</b> Structured the UI into three dedicated operational consoles: (1) Natural Language Telemetry Query Engine with CSV dataset importer; (2) Autonomous Anomaly Detection &amp; Emergency Triage with SOP briefings; and (3) Mission Knowledge Assistant with dual guardrail mode toggles.", bullet_style))
+    story.append(P("• <b>Reactive Plotly Telemetry Graphing:</b> Integrated dynamic time-series charts rendering continuous sensor curves for battery voltage degradation, thermal spikes, and attitude gyroscope drift across all 7 tracked spacecraft.", bullet_style))
+    story.append(P("• <b>Production Cloud Deployment:</b> Deployed the live application at <code>https://spacepilot-isro.streamlit.app/</code>, backed by automated Git synchronization from GitHub repository <code>sahelidgp/spacepilot</code>.", bullet_style))
+    story.append(P("• <b>Enterprise Secret Management:</b> Secured API credentials and environment configurations using Streamlit Secrets management in cloud production and local <code>.env</code> files in development.", bullet_style))
+    story.append(P("• <b>Robust Fallback Architecture:</b> Engineered deterministic rule-based fallbacks ensuring full UI functionality and responsive answers even during network disconnections or LLM API quota throttling.", bullet_style))
 
-    story.append(P("<b>Impact:</b> Mathematically proves zero hallucination for off-domain queries while providing instantaneous, cited answers for newly ingested flight manuals.", body_style))
+    story.append(P("<b>Impact:</b> Delivers a live, publicly accessible, zero-installation space mission intelligence copilot operating with sub-second latency across global ground control networks.", body_style))
 
     story.append(PageBreak())
 
@@ -588,7 +552,7 @@ def build_pdf_story():
     story.append(P("7. Conclusion", h1_style))
     story.append(Spacer(1, 4))
     story.append(P(
-        "My 15-day internship under the <i>Def-Space Artificial Intelligence Programme 2026</i> at the <b>Bharat Space Education Research Centre (BSERC)</b> was an intense, intellectually demanding, and deeply rewarding engineering experience. Developing <b>Spacepilot</b> allowed me to tackle genuine operational bottlenecks in space mission operations: bridging structured telemetry data with unstructured flight manuals, automating anomaly triage, and eliminating AI hallucinations through strict guardrails.",
+        "My internship from <b>20 May 2026 to 25 June 2026</b> under the <i>Def-Space Artificial Intelligence Programme</i> at the <b>Bharat Space Education Research Centre (BSERC)</b> was an intense, intellectually demanding, and deeply rewarding engineering experience. Developing <b>Spacepilot</b> allowed me to tackle genuine operational bottlenecks in space mission operations: bridging structured telemetry data with unstructured flight manuals, automating anomaly triage, and eliminating AI hallucinations through strict guardrails.",
         body_style
     ))
     story.append(P(
@@ -614,7 +578,7 @@ def build_pdf_story():
     return story
 
 def generate_pdf():
-    print(f"Generating Spacepilot Project Report PDF matching reference format...")
+    print(f"Generating Spacepilot Project Report PDF matching reference format (No screenshots, May 20 - June 25, 2026)...")
     doc = SimpleDocTemplate(
         OUTPUT_REPORT_PDF,
         pagesize=letter,
